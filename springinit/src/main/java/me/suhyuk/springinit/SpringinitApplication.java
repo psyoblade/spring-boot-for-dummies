@@ -9,6 +9,8 @@ import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -19,7 +21,13 @@ import java.io.PrintWriter;
 
 @SpringBootApplication
 @EnableConfigurationProperties(HolomanProperties.class)
+@RestController
 public class SpringinitApplication {
+
+	@GetMapping("/")
+	public String hello() {
+		return "hello spring";
+	}
 
 	public static void main(String[] args) {
 		SpringApplication application = new SpringApplication(SpringinitApplication.class);
