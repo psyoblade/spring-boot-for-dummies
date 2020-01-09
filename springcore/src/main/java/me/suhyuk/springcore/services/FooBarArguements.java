@@ -1,4 +1,4 @@
-package me.suhyuk.springcore;
+package me.suhyuk.springcore.services;
 
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.CommandLineRunner;
