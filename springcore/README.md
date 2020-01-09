@@ -34,17 +34,18 @@ psyoblade.fullName = The great wizard ${psyoblade.name}
 # 서버 포트는 위의 랜덤함수를 사용해서는 안되며 아래와 같이 0으로 설정해야 합니다
 # server.port = 0 # 항상 가용한 랜덤 포트를 설정합니다
 ```
+* [마크다운 사용법](https://gist.github.com/ihoneymon/652be052a0727ad59601)
 
 ##### 1. 프로퍼티 우선 순위 (application.properties)
 * 유저 홈 디렉토리에 있는 spring-boot-dev-tools.properties
 * 테스트에 있는 @TestPropertySource - 컴파일 시에 src/main 설정을 src/test 가 덮어쓴다.
-* - 경우에 따라 일부 속성값이 src/main 에만 존재하는 경우 Test 시에 해당 application.properties 
-* - 즉, application.properties 값이 덮어써져서 Injection 이 실패하므로 test 쪽에도 넣어주어야만 한다
-* - 이러한 상황을 회피하는 방법은 @SpringBootTest(properties="psyoblade.age=${random.int}) 를 쓸 수 있다
-* - 또 다른 회피 방안은 아예 test/resources/application.properties 파일을 지우고 src/main 을 쓰게하는 방법이 있다 
-* - 추천 방식은 라이브에만 application.properties 사용하고 @SprintBootTest(properties= {"k1=v1", "k2=v2"}) 이다
-* - 너무 많은 프로퍼티 값들이 있다면 test.properties 파일을 만들고 @TestPropertySource 어노테이션을 씁니다
-* - 이 경우에는 (locations = "classpath:/test.properties") 에 지정된 파일에 있는 k:v 값만 override 됩니다
+  - 경우에 따라 일부 속성값이 src/main 에만 존재하는 경우 Test 시에 해당 application.properties 
+  - 즉, application.properties 값이 덮어써져서 Injection 이 실패하므로 test 쪽에도 넣어주어야만 한다
+  - 이러한 상황을 회피하는 방법은 @SpringBootTest(properties="psyoblade.age=${random.int}) 를 쓸 수 있다
+  - 또 다른 회피 방안은 아예 test/resources/application.properties 파일을 지우고 src/main 을 쓰게하는 방법이 있다 
+  - 추천 방식은 라이브에만 application.properties 사용하고 @SprintBootTest(properties= {"k1=v1", "k2=v2"}) 이다
+  - 너무 많은 프로퍼티 값들이 있다면 test.properties 파일을 만들고 @TestPropertySource 어노테이션을 씁니다
+  - 이 경우에는 (locations = "classpath:/test.properties") 에 지정된 파일에 있는 k:v 값만 override 됩니다
 * @SpringBootTest 애노테이션의 properties 애트리뷰트
 * 커맨드 라인 아규먼트
 * SPRING_APPLICATION_JSON (환경 변수 또는 시스템 프로티) 에 들어있는 프로퍼티
