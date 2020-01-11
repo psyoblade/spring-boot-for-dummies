@@ -1,5 +1,7 @@
 package me.suhyuk.springcore.services;
 
+import me.suhyuk.springcore.config.ExternalProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -15,8 +17,19 @@ public class SampleRunner implements ApplicationRunner {
     @Value("${psyoblade.fullName}")
     private String fullName;
 
+    @Autowired
+    private ExternalProperties props = new ExternalProperties();
+
+    private String getSessionDuration() {
+        return String.format("%s", props.getSessionTimeout());
+    }
+
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        System.out.println(String.format("'%s' - '%s' is '%d' years old.", fullName, name, age));
+        String defaultValue = String.format("'%s' - '%s' is '%d' years old.", fullName, name, age);
+        String externalConf = String.format("'%s' - '%s' i s'%d' years old.", props.getName(), props.getFullName(), props.getAge());
+        System.out.println("=====================");
+        System.out.println("internal:" + defaultValue + ", external:" + externalConf + ", timeout:" + getSessionDuration());
+        System.out.println("=====================");
     }
 }

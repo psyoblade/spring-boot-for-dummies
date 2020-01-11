@@ -61,8 +61,17 @@ psyoblade.fullName = The great wizard ${psyoblade.name}
 * JAR 안에 있는 application properties
 * @PropertySource
 * 기본 프로퍼티 (SpringApplication.setDefaultProperties)
+* 타입에 안전한 프로퍼티 @ConfigurationProperties
+  - 별도의 파일의 convention 규칙에 따라 적용하는 것이 애매한 경우 class 로 구성할 수 있으므로 type-safe 하다
+  - bean 으로 등록하여 다른 빈에 주입할 수 있다 @me.suhyuk.springcore.config.Externalproperties
+* 융통성 있는 바인딩
+  - context-path, context_path, contextPath 모두 동일하게 인식
+* 프로퍼티 타입 컨버전 
+  - @DurationUnit(DurationUnit.SECONDS) 설정하는 경우 25, 25s 등으로 설정해도 인식가능
+* 프로퍼티 값 검증
+  - @Validated 설정을 통해서 JSR-303 (ex_ @NotNull, @NotEmpty, @Range 등) 적용이 가능
 
-* 프로파일
+#### 2. 프로파일
 * 로깅
 * 테스트
 * Spring-dev-tools
