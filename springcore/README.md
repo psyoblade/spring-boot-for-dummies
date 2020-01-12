@@ -79,13 +79,16 @@ Annotation Processors 설정에서 Enable annotation processing 키고 Rebuild
 #### 2. 프로파일
 > 특정 환경에서만 동작하게끔 하는 스프링의 기능 @Profile("prod") 인 경우는 프로파일이 "prod"인 경우만 활성화 됩니다
 
-#### @Autowired 변수의 특징
+#### 2-1. @Autowired 변수의 특징
 * @Autowired 어노테이션이 붙어있는 String 문자열이 하나 있다면 ComponentScan 된 것 중에 하나만 반환값이 String Bean 이 주입된다
-
-#### 파라메터를 통해서 프로파일을 변경하고자 하는 경우
+#### 2-2. 파라메터를 통해서 프로파일을 변경하고자 하는 경우
 ```bash
 java -jar target/springcore-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod
 ```
+#### 2-3. application.yml 설정과 prod, test 설정을 같이 유지하고 싶은 경우
+* application.yml 파일에 spring.profiles.active 설정을 유지해야 합니다
+* 개별 application-${type}.yml 파일을 생성하고 각 type 별 Profile 설정된 Configuration 클래스를 생성합니다
+* application.yml 파일에 spring.profiles.include 형식으로 포함시킬 수도 있습니다
 
 * 로깅
 * 테스트

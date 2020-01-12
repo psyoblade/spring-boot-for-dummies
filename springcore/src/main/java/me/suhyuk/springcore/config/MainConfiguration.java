@@ -10,6 +10,6 @@ public class MainConfiguration {
 
     @Bean
     public String sayHello() {
-        return "hello-main-configuration";
+        return "hello-prod-configuration";
     }
 }
