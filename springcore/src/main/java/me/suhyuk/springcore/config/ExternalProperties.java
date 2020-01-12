@@ -19,7 +19,7 @@ public class ExternalProperties {
     @NotEmpty
     private String name;
 
-    @Range(min=10, max=100)
+    @Range(min=1, max=100)
     private int age;
 
     @NotNull

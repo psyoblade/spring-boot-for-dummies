@@ -33,6 +33,11 @@ psyoblade.fullName = The great wizard ${psyoblade.name}
 
 # 서버 포트는 위의 랜덤함수를 사용해서는 안되며 아래와 같이 0으로 설정해야 합니다
 # server.port = 0 # 항상 가용한 랜덤 포트를 설정합니다
+
+# TODO application.yml 자동완성
+Annotation Processors 설정에서 Enable annotation processing 키고 Rebuild
+안타깝지만 application.properties 에서는 Ultimate Edition 에서만 동작한다
+
 ```
 * [마크다운 사용법](https://gist.github.com/ihoneymon/652be052a0727ad59601)
 
@@ -72,6 +77,16 @@ psyoblade.fullName = The great wizard ${psyoblade.name}
   - @Validated 설정을 통해서 JSR-303 (ex_ @NotNull, @NotEmpty, @Range 등) 적용이 가능
 
 #### 2. 프로파일
+> 특정 환경에서만 동작하게끔 하는 스프링의 기능 @Profile("prod") 인 경우는 프로파일이 "prod"인 경우만 활성화 됩니다
+
+#### @Autowired 변수의 특징
+* @Autowired 어노테이션이 붙어있는 String 문자열이 하나 있다면 ComponentScan 된 것 중에 하나만 반환값이 String Bean 이 주입된다
+
+#### 파라메터를 통해서 프로파일을 변경하고자 하는 경우
+```bash
+java -jar target/springcore-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod
+```
+
 * 로깅
 * 테스트
 * Spring-dev-tools

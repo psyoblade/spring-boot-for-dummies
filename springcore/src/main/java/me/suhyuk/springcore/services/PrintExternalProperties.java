@@ -8,7 +8,7 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SampleRunner implements ApplicationRunner {
+public class PrintExternalProperties implements ApplicationRunner {
     // TODO application.properties 에 설정된 Key=Value 값을 액세스 하는 예제
     @Value("${psyoblade.name}")
     private String name;
@@ -30,6 +30,7 @@ public class SampleRunner implements ApplicationRunner {
         String externalConf = String.format("'%s' - '%s' i s'%d' years old.", props.getName(), props.getFullName(), props.getAge());
         System.out.println("=====================");
         System.out.println("internal:" + defaultValue + ", external:" + externalConf + ", timeout:" + getSessionDuration());
+        System.out.println("Full-name is " + props.getFullName());
         System.out.println("=====================");
     }
 }

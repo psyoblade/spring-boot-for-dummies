@@ -7,10 +7,10 @@ import org.springframework.stereotype.Component;
 import java.util.Arrays;
 
 @Component
-public class FooBarArguements implements CommandLineRunner {
+public class PrintApplicationArguments implements CommandLineRunner {
 
     // TODO 빈에 생성자가 1개이고, 생성자의 파라매터가 빈인 경우 스프링이 알아서 주입해 준다
-    public FooBarArguements(ApplicationArguments args) {
+    public PrintApplicationArguments(ApplicationArguments args) {
         boolean foo = args.containsOption("foo"); // -Dfoo 옵션은 JVM 에서만 인지
         boolean bar = args.containsOption("bar"); // --bar 즉 프로그램 아규먼트만 인지
         System.out.println(foo + "," + bar);

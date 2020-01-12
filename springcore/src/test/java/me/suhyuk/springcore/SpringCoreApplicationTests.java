@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(SpringRunner.class)
 @TestPropertySource(locations = "classpath:/test.properties")
 @SpringBootTest(properties = "psyoblade.age=${random.int}")
-public class SpringcoreApplicationTests {
+public class SpringCoreApplicationTests {
 
     @Autowired
     Environment environment;

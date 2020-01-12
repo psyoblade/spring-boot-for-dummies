@@ -1,0 +1,9 @@
+spring:
+  profiles:
+    active: "test"
+
+psyoblade:
+  name: "test.suhyuk"
+  age: 1
+  full-name: "test is not right"
+  session-timeout: 10s

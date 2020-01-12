@@ -1,0 +1,9 @@
+spring:
+  profiles:
+    active: "prod"
+
+psyoblade:
+  name: "park.suhyuk"
+  age: 1
+  full-name: "prod is always right"
+  session-timeout: 60s
