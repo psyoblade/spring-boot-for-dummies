@@ -1,19 +1,22 @@
-# 인프런 스프링 부트 개념과 활용
+# 4부 스프링 부트 활용
 
-## 4부 스프링 부트 활용
+## 목차
+1. [스프링부트 활용 소개](#스프링부트)
 
-### 스프링부트 핵심 기능
 
-#### SpringApplication
+## 스프링부트 활용 소개
+> 스프링 부트에 대해 설명
+
+## 스프링 어플리케이션
 * 로깅은 기본은 INFO 이지만 VM Option -Ddebug 혹은 프로그램 아규먼트로 --debug 
 * ApplicationContext 보다 이후에 실행되어야 하는 Bean 은 ApplicaitonListener<ApplicationStartedEvent> 를 구현해서 적용할 수 있습니다 (이 때에는 Bean으로 등록)
 * ApplicationContext 보다 먼저 실행되는 Bean 들에 대한 트리거 작업은 <ApplicationStartingEvent>를 구현해도 수행되지 않으므로 별도로 addListener 통해 등록이 필요하다
 * WebApplicationType { Servlet (default), Reactive(Webflux, not servlet), None }
 * Spring Application 의 프로그램 내에서는 JVM 옵션인 -Dfoo 정보는 받아올 수 없고  Program Args 인 --bar 정보만 활용할 수 있다
 
-#### 외부 설정
+## 외부 설정
 
-##### 0. 기타 참고 항목들
+## 1 참고 항목들
 ```bash
 # 테스트를 제외하고 패키지 생성
 mvn clean package -DskipTests
@@ -41,7 +44,7 @@ Annotation Processors 설정에서 Enable annotation processing 키고 Rebuild
 ```
 * [마크다운 사용법](https://gist.github.com/ihoneymon/652be052a0727ad59601)
 
-##### 1. 프로퍼티 우선 순위 (application.properties)
+### 2 프로퍼티 우선 순위 (application.properties)
 * 유저 홈 디렉토리에 있는 spring-boot-dev-tools.properties
 * 테스트에 있는 @TestPropertySource - 컴파일 시에 src/main 설정을 src/test 가 덮어쓴다.
   - 경우에 따라 일부 속성값이 src/main 에만 존재하는 경우 Test 시에 해당 application.properties 
@@ -76,21 +79,22 @@ Annotation Processors 설정에서 Enable annotation processing 키고 Rebuild
 * 프로퍼티 값 검증
   - @Validated 설정을 통해서 JSR-303 (ex_ @NotNull, @NotEmpty, @Range 등) 적용이 가능
 
-#### 2. 프로파일
+## 프로파일
 > 특정 환경에서만 동작하게끔 하는 스프링의 기능 @Profile("prod") 인 경우는 프로파일이 "prod"인 경우만 활성화 됩니다
 
-#### 2-1. @Autowired 변수의 특징
+### 3-1. @Autowired 변수의 특징
 * @Autowired 어노테이션이 붙어있는 String 문자열이 하나 있다면 ComponentScan 된 것 중에 하나만 반환값이 String Bean 이 주입된다
-#### 2-2. 파라메터를 통해서 프로파일을 변경하고자 하는 경우
+### 3-2. 파라메터를 통해서 프로파일을 변경하고자 하는 경우
 ```bash
 java -jar target/springcore-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod
 ```
-#### 2-3. application.yml 설정과 prod, test 설정을 같이 유지하고 싶은 경우
+### 3-4. application.yml 설정과 prod, test 설정을 같이 유지하고 싶은 경우
 * application.yml 파일에 spring.profiles.active 설정을 유지해야 합니다
 * 개별 application-${type}.yml 파일을 생성하고 각 type 별 Profile 설정된 Configuration 클래스를 생성합니다
 * application.yml 파일에 spring.profiles.include 형식으로 포함시킬 수도 있습니다
-
-* 로깅
+<br>
+---
+## 로깅
 * 테스트
 * Spring-dev-tools
 
