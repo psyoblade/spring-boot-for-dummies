@@ -4,7 +4,8 @@
 1. [스프링 어플리케이션](#스프링-어플리케이션)
 2. [외부설정 (Configuration)](#외부설정)
 3. [프로파일 (Profile)](#프로파일)
-4. [참고항목 (References)](#참고-항목들)
+4. [로깅설정 (Logging)](#로깅설정)
+9. [참고항목 (References)](#참고-항목들)
 
 
 ## 스프링 어플리케이션
@@ -62,6 +63,23 @@
 * application.yml 파일에 spring.profiles.active 설정을 유지해야 합니다
 * 개별 application-${type}.yml 파일을 생성하고 각 type 별 Profile 설정된 Configuration 클래스를 생성합니다
 * application.yml 파일에 spring.profiles.include 형식으로 포함시킬 수도 있습니다
+
+
+## 로깅설정
+> 스프링에서 어떻게 로깅이 수행되고, 활용하는 지에 대해 이해합니다.
+> 스프링은 slf4j 등의 파사드 패턴을 활용하여 다양한 JUL, Log4j, Logback 등의 로거를 활용할 수 있도록 한다
+
+### [스프링5 로거 변경사항](https://docs.spring.io/spring/docs/5.0.0.RC3/spring-framework-reference/overview.html#overview-logging)
+* 스프링5 에서의 로깅은 commons-logging -> slf4j -> logback 을 사용합니다
+  - 스프링 코어와 내부 상황에 따라 복잡하지만 JUL, log4j 등도 결국 logback 로거를 사용합니다
+  - 참고로 SLF4J 는 Simple Logging Facade for Java 의 약어입니다
+* 간단한 로깅 옵션
+  - | 옵션 | 설명 | 기타 |
+  - |-|-|-|
+  - | --debug | 내부 컨테이너, Hibernate 및 Spring 에 대한 것만 디버깅으로 출력 | - |
+  - | --trace | 모든 로그를 디버깅으로 출력 | - |
+  
+
 
 ## 참고 항목들
 * 잘 모르고 있던 Autowired 변수의 특징
