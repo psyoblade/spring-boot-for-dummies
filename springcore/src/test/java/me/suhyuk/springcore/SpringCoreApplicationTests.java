@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class SpringCoreApplicationTests {
 
     @Autowired
-    Environment environment;
+    private Environment environment;
 
     @Test
     public void contextLoads() {

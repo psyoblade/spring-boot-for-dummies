@@ -73,17 +73,45 @@
 * 스프링5 에서의 로깅은 commons-logging -> slf4j -> logback 을 사용합니다
   - 스프링 코어와 내부 상황에 따라 복잡하지만 JUL, log4j 등도 결국 logback 로거를 사용합니다
   - 참고로 SLF4J 는 Simple Logging Facade for Java 의 약어입니다
-* 간단한 로깅 옵션
-  - | 옵션 | 설명 | 기타 |
-  - |-|-|-|
-  - | --debug | 내부 컨테이너, Hibernate 및 Spring 에 대한 것만 디버깅으로 출력 | - |
-  - | --trace | 모든 로그를 디버깅으로 출력 | - |
-  
+* [로깅 옵션](https://docs.spring.io/spring-boot/docs/2.1.8.RELEASE/reference/html/boot-features-logging.html)
 
+| 옵션| 설명 | 기타|
+| ------------ | ----------- | ------------------- |
+| --debug | 내부 컨테이너, Hibernate 및 Spring 에 대한 것만 디버깅으로 출력 | - |
+| --trace | 모든 로그를 디버깅으로 출력 | - |
+| spring.output.ansi.enabled | 컬러 출력 | always, detect, never |
+| logging.file | 로깅 파일 출력 | - |
+| logging.path | 로깅 디렉토리 출력 | - |
+| logging.level.{package} | *특정 패키지에 대한 디버깅 설정* | ...me.suhyuk.springcore.services=debug |
+| ${ENV_VARS} | 환경변수 값을 활용하여 변경 | ... level="${CUSTOM_LEVEL}"/> |
+
+* [별도의 로그백 설정파일](https://docs.spring.io/spring-boot/docs/2.1.8.RELEASE/reference/html/howto-logging.html#howto-configure-logback-for-logging)
+  - 이름을 logback-spring.xml 로 명시해야 로그백 파일 안에서 프로파일 혹은 환경변수를 사용할 수 있다
+  - logback.xml 파일을 사용하는 경우, 너무 일찍 로딩이 되기 때문입니다
+  
+* 로그 종속성 설정 (기본 logging slf4j)
+```xml
+<dependency>
+<groupId>org.springframework.boot</groupId>
+<artifactId>spring-boot-starter-logging</artifactId>
+</dependency>
+```
+
+## 테스트
+
+### 스프링 부트 테스트의 시작은 pom.xml 수정부터
+* artifactId "spring-boot-starter-test" 추가하면 됩니다
+* 그리고 기본 @SpringBootTest 설정이 MOCK 인데, 스프링 컨테이너가 목킹한 DispatcherServlet MockUp 이 뜨게 된다
+* 즉, 즉 내장 톰캣이 뜨지 않으며, MockMVC 를 사용해야만 하는데 이 때에 @AutoConfigureMockMvc 설정이 필요합니다
+* SpringBootApplication 을 찾아서 필요한 컴포넌트를 목킹하여 테스트 할 수 있는 환경을 제공해 준다
+
+### 스프링부트 테스트가 너무 무겁다면 슬라이싱 테스트를 추천
+* JsonTest 통한 실험
 
 ## 참고 항목들
 * 잘 모르고 있던 Autowired 변수의 특징
   - 해당 어노테이션이 붙어있는 String 문자열이 하나 있다면 ComponentScan 된 것 중에 하나만 반환값이 String Bean 이 주입된다
+* pom.xml 파일의 경우 버전은 parent 에서 관리됩니다
 * 파라메터를 통해서 프로파일을 변경하고자 하는 경우
   - ```bash
     java -jar target/springcore-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod

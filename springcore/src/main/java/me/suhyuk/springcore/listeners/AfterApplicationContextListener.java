@@ -1,4 +1,4 @@
-package me.suhyuk.springcore.listener;
+package me.suhyuk.springcore.listeners;
 
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.ApplicationListener;

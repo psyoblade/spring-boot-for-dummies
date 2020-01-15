@@ -1,13 +1,12 @@
 package me.suhyuk.springcore;
 
-import me.suhyuk.springcore.listener.BeforeApplicationContextListener;
+import me.suhyuk.springcore.listeners.BeforeApplicationContextListener;
 import org.springframework.boot.Banner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Profile;
 
 @SpringBootApplication
 // @EnableConfigurationProperties(ExternalProperties.class) // 여기에 등록하면 2개 등록하려고 하는 바람에 오류가 난다
