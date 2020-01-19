@@ -1,8 +1,11 @@
 package me.suhyuk.springcore.controllers;
 
+import me.suhyuk.springcore.entities.SpringUnit;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -15,7 +18,25 @@ import static org.mockito.Mockito.when;
 // 테스트용 서블릿 톰캣이 임의의 포트에 뜨게되고 테스트용 RestTemplate 을 사용합니다
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureWebTestClient
 public class SpringUnitWebTest {
+
+    private static String name;
+
+    @BeforeClass
+    public static void setUp() {
+        name = "park.suhyuk";
+    }
+
+    @Autowired
+    private WebTestClient webClient;
+
+    @Test
+    public void testWebClient() {
+        webClient.get().uri("/hello").exchange()
+                .expectStatus().isOk()
+                .expectBody(String.class).isEqualTo(name);
+    }
 
     // 일반 Rest Controller 를 이용한 예제
     @Autowired
@@ -44,7 +65,7 @@ public class SpringUnitWebTest {
     private WebTestClient webTestClient;
 
     @Test
-    public void testWebClient() {
+    public void testWebTestClient() {
         // 이 경우 클라이언트 웹플럭스 dependency 가 주입되어 있어야 하는데 일단 돌려보면... NoSuchBeanDefinitionException
         // spring-boot-starter-webflux dependency 추가가 필요합니다
         webTestClient.get().uri("/hello").exchange().expectStatus().isOk()

@@ -98,6 +98,8 @@
 ```
 
 ## 테스트
+> 우선 spring-boot-starter-test 참조하고, @SpringBootTest, @RunWith(SpringRunner.class) 추가합니다.
+> 무엇보다도 SpringBootTest(webEnvironment = "") 설정에 따라 서버를 띄울지 여부를 판단합니다
 
 ### 스프링 부트 테스트의 시작은 pom.xml 수정부터
 * artifactId "spring-boot-starter-test" 추가하면 됩니다
