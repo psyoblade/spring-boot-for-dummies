@@ -31,6 +31,10 @@ public class UserControllerTest {
                 .andExpect(content().string("hello"));
     }
 
+    /**
+     * 클라이언트가 어떤 뷰를 원하는지 알아내는 (Resolver) 방법은 Accept header 정보입니다
+     * @throws Exception
+     */
     @Test
     public void testCreateUser() throws Exception {
         String userJson = "{\"username\":\"suhyuk\", \"password\":\"park\"}";
@@ -43,4 +47,25 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.username", is(equalTo("suhyuk"))))
                 .andExpect(jsonPath("$.password", is(equalTo("park"))));
     }
+
+    /**
+     * Contents Negotiation Resolver 가 있으므로 요청은 Json 으로 보내고 응답은 XML 로 보내는 것을 테스트
+     * 1차 테스트 실패 하는데 해당 HttpMessageConvertersAutoConfiguration 에서 사용하는 XmlConverter 가 없기 때문입니다
+     * jackson-dataformat-xml 를 pom.xml 에 추가하여 해결합니다
+     * @throws Exception
+     */
+    @Test
+    public void testSendJsonReceiveXML() throws Exception {
+        String userJson = "{\"username\":\"suhyuk\", \"password\":\"park\"}";
+        mockMvc.perform(
+                post("/users/create")
+                    .contentType(MediaType.APPLICATION_JSON_UTF8)
+                    .accept(MediaType.APPLICATION_XML)
+                    .content(userJson))
+                .andExpect(status().isOk())
+                .andExpect(xpath("/User/username").string("suhyuk"))
+                .andExpect(xpath("/User/password").string("park"));
+    }
+
 }
+

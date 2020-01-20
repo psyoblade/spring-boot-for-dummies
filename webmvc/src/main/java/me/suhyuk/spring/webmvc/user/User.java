@@ -1,8 +1,8 @@
 package me.suhyuk.spring.webmvc.user;
 
 public class User {
-    String username;
-    String password;
+    private String username;
+    private String password;
 
     public String getUsername() {
         return username;
