@@ -3,7 +3,7 @@
 
 ## 목차
 ### [1. 스프링 웹 MVC 소개](#스프링-웹-MVC)
-### 2. HttpMessageConverters
+### [2. HttpMessageConverters](#스프링_웹_MVC)
 ### 3. ViewResolve
 ### 4. 정적 리소스
 ### 5. 웹 JAR
