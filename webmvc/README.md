@@ -23,12 +23,22 @@
 * 컨트롤러에서 GetMapping -> RequestMapping 과 같이 다양한 Request 에 대한 맵핑을 Filter 수준에서 이미 해주기 때문에 부트가 쉬워진다
 
 ### 2. HttpMessageConverters
+
 ### 3. ViewResolve
+
 ### 4. 정적 리소스
+> 클라이언트의 요청에 동적으로 생성되지 않고 초기화되어 있어 생성된 객체 혹은 리소스의 값을 그대로 전달하는 경우를 말합니다
+
 ### 5. 웹 JAR
+
 ### 6. index 페이지와 파비콘
+
 ### 7. Thymeleaf
+
 ### 8. HtmlUnit
+
 ### 9. ExceptionHandler
+
 ### 10. Spring HATEOAS
+
 ### 11. CORS
