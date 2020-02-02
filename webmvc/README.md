@@ -2,7 +2,7 @@
 > 웹 MVC 란 무엇이고, 어떻게 활용하는지 이해합니다
 
 ## 목차
-### [1. 스프링 웹 MVC 소개](#1.-스프링-웹-MVC-소개)
+### [1. 스프링 웹 MVC 소개](#1-스프링-웹-MVC-소개)
 ### [2. HttpMessageConverters](#2.-HttpMessageConverters)
 ### [3. ViewResolve](#3.-ViewResolve)
 ### [4. 정적 리소스](#4.-정적-리소스)
