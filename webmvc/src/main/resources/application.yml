@@ -1,0 +1,15 @@
+spring:
+  profiles: rc
+name: rc-YAML
+environment: rc
+servers:
+  - www.abc.rc.com
+  - www.xyz.rc.com
+---
+sprint:
+  profiles: live
+name: prod-YAML
+environment: production
+servers:
+  - www.abc.com
+  - www.xyz.com

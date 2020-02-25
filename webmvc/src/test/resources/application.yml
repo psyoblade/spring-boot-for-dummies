@@ -1,0 +1,7 @@
+spring:
+  profiles: test
+name: test-YAML
+environment: test
+servers:
+  - www.abc.test.com
+  - www.xyz.test.com
