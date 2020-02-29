@@ -1,6 +1,6 @@
 package me.suhyuk.spring.webmvc;
 
-import me.suhyuk.spring.prototype.AppConfig;
+import me.suhyuk.spring.prototype.conf.AppConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;

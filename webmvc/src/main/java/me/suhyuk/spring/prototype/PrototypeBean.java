@@ -10,7 +10,7 @@ public class PrototypeBean {
 
     public PrototypeBean(String name) {
         this.name = name;
-        logger.info("Prototype instance " + name + " created");
+        logger.info("##### Prototype instance " + name + " created");
     }
 
     public String getName() {

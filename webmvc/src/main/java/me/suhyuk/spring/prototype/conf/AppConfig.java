@@ -1,11 +1,11 @@
-package me.suhyuk.spring.prototype;
+package me.suhyuk.spring.prototype.conf;
 
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import me.suhyuk.spring.prototype.BeanFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -45,18 +45,8 @@ public class AppConfig {
     }
 
     @Bean
-    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public PrototypeBean prototypeBean() {
-        return new PrototypeBean(LocalTime.now().toString());
+    public BeanFactory singletonBean() {
+        return new BeanFactory();
     }
 
-    @Bean
-    public SingletonBean singletonBean() {
-        return new SingletonBean();
-    }
-
-    @Bean
-    public NormalBean normalBean() {
-        return new NormalBean(LocalTime.now().toString());
-    }
 }

@@ -2,24 +2,23 @@ package me.suhyuk.spring.prototype;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.time.LocalTime;
+import org.springframework.stereotype.Service;
 
 public class SingletonBean {
 
     private Logger logger = LoggerFactory.getLogger(SingletonBean.class);
+    private String name;
 
-    @Autowired
-    private PrototypeBean prototypeBean;
-
-    public SingletonBean() {
-        logger.info("singleton instance created");
+    public SingletonBean(String name) {
+        this.name = name;
+        logger.info("##### Singleton instance " + name + " created");
     }
 
-    public PrototypeBean getPrototypeBean() {
-        logger.info(String.valueOf(LocalTime.now()));
-        return prototypeBean;
+    public String getName() {
+        return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
 }
