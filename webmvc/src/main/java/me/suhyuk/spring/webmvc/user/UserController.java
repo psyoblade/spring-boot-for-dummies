@@ -16,7 +16,9 @@ public class UserController {
     }
 
     @PostMapping("/users/create")
-    public User createUser(@RequestBody User user) {
+    public User createUser(User user) {
+        user.setUsername("psyoblade");
+        user.setPassword("pass!");
         return user;
     }
 

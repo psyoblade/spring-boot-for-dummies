@@ -1,10 +1,10 @@
-package me.suhyuk.spring.prototype;
+package me.suhyuk.spring.prototype.beans;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-@Service
+//@Service
 public class NormalBean {
     private Logger logger = LoggerFactory.getLogger(NormalBean.class);
     private String name;

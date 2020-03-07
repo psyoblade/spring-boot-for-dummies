@@ -2,6 +2,7 @@ package me.suhyuk.spring.prototype.conf;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 public class NamedEntity {
     private Logger logger = LoggerFactory.getLogger(NamedEntity.class);

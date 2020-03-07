@@ -1,4 +1,4 @@
-package me.suhyuk.spring.prototype;
+package me.suhyuk.spring.prototype.beans;
 
 import org.springframework.beans.factory.annotation.Autowired;
 

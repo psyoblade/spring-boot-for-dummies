@@ -1,5 +1,9 @@
 package me.suhyuk.spring.prototype;
 
+import me.suhyuk.spring.prototype.beans.BeanFactory;
+import me.suhyuk.spring.prototype.beans.NormalBean;
+import me.suhyuk.spring.prototype.beans.PrototypeBean;
+import me.suhyuk.spring.prototype.beans.SingletonBean;
 import me.suhyuk.spring.prototype.conf.AppConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;

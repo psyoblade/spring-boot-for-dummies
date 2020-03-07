@@ -1,9 +1,9 @@
-package me.suhyuk.spring.prototype;
+package me.suhyuk.spring.prototype.beans;
 
 import org.springframework.beans.factory.annotation.Lookup;
 import org.springframework.stereotype.Component;
 
-@Component
+//@Component
 public class SingletonLookupBean {
 
     @Lookup

@@ -42,10 +42,11 @@ public class UserControllerTest {
                 post("/users/create")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .accept(MediaType.APPLICATION_JSON_UTF8)
-                .content(userJson))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.username", is(equalTo("suhyuk"))))
-                .andExpect(jsonPath("$.password", is(equalTo("park"))));
+                .content(userJson)
+        ) // request
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.username", is(equalTo("psyoblade"))))
+        .andExpect(jsonPath("$.password", is(equalTo("pass!")))); // response
     }
 
     /**
@@ -60,11 +61,11 @@ public class UserControllerTest {
         mockMvc.perform(
                 post("/users/create")
                     .contentType(MediaType.APPLICATION_JSON_UTF8)
-                    .accept(MediaType.APPLICATION_XML)
+                    .accept(MediaType.APPLICATION_XML) // 요청 MediaType 변경만으로도 Response 가 달라집니다
                     .content(userJson))
                 .andExpect(status().isOk())
-                .andExpect(xpath("/User/username").string("suhyuk"))
-                .andExpect(xpath("/User/password").string("park"));
+                .andExpect(xpath("/User/username").string("psyoblade"))
+                .andExpect(xpath("/User/password").string("pass!"));
     }
 
 }

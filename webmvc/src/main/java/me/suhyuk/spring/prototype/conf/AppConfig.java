@@ -1,13 +1,11 @@
 package me.suhyuk.spring.prototype.conf;
 
-import me.suhyuk.spring.prototype.BeanFactory;
+import me.suhyuk.spring.prototype.beans.BeanFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,9 +42,9 @@ public class AppConfig {
         this.servers = servers;
     }
 
-    @Bean
-    public BeanFactory singletonBean() {
-        return new BeanFactory();
-    }
+//    @Bean
+//    public BeanFactory singletonBean() {
+//        return new BeanFactory();
+//    }
 
 }

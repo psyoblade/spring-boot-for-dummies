@@ -1,12 +1,7 @@
-package me.suhyuk.spring.prototype;
+package me.suhyuk.spring.prototype.beans;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
-
-import java.time.LocalTime;
 
 //@Component
 public class NormalBeanFactory {
