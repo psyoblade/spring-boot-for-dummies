@@ -15,8 +15,8 @@ import static org.junit.Assert.*;
 @RunWith(SpringRunner.class)
 @ActiveProfiles("test")
 @SpringBootTest(classes = SpringPrototypeApplicationTest.class) // multiple @SpringBootConfiguration annotated classes
-public class PersonTest {
-    private Logger logger = LoggerFactory.getLogger(PersonTest.class);
+public class DependencyInjectionTest {
+    private Logger logger = LoggerFactory.getLogger(DependencyInjectionTest.class);
 
     @Autowired
     PersonFactory personFactory;

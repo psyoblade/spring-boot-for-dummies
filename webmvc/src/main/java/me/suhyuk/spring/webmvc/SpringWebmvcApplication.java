@@ -1,6 +1,5 @@
 package me.suhyuk.spring.webmvc;
 
-import me.suhyuk.spring.prototype.conf.AppConfig;
 import me.suhyuk.spring.webmvc.config.WebConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -19,6 +18,7 @@ public class SpringWebmvcApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
+		System.out.println("hello spring world");
 		System.out.println(appConfig.getClass().toGenericString());
 	}
 }

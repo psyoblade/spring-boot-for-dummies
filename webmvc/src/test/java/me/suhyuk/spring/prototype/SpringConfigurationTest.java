@@ -19,7 +19,7 @@ import static org.junit.Assert.assertEquals;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ContextConfiguration(classes = SpringPrototypeApplicationTest.class)
-public class FooTest {
+public class SpringConfigurationTest {
 
     @Autowired
     ApplicationContext applicationContext;
