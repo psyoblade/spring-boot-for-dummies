@@ -15,7 +15,13 @@ webjar-locator 를 이용하면 버전관리를 따로 하지 않아도 된다
 <script src="/webjars/jquery/jquery.min.js"></script>
 <script>
     $(function() {
-        alert("ready2!");
+        $.ajax("http://localhost:8888/hello")
+        .done(function(msg) {
+            alert('SUCCESS:' + msg);
+        })
+        .fail(function(msg) {
+            alert('FAILURE' + msg);
+        });
     })
 </script>
 </body>
