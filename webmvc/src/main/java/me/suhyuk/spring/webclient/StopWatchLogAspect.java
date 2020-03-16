@@ -22,7 +22,8 @@ public class StopWatchLogAspect {
         stopWatch.start();
         Object object = joinPoint.proceed();
         stopWatch.stop();
-        logger.info(stopWatch.prettyPrint());
+        String signature = joinPoint.getSignature().toString();
+        logger.info(signature + " --> " + stopWatch.prettyPrint());
 
         return object;
     }
