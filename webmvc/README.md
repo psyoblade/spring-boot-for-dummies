@@ -23,8 +23,11 @@
 * 컨트롤러에서 GetMapping -> RequestMapping 과 같이 다양한 Request 에 대한 맵핑을 Filter 수준에서 이미 해주기 때문에 부트가 쉬워진다
 
 ### 2. HttpMessageConverters
+> Request → Resolver → Filter → Converter → 비즈니스 로직 처리 → Converter → Response 과정을 통해서 요청부터 응답까지 수행됩니다
+> 이 과정에서 클라이언트 요청을 내부 객체로 변환 혹은 변환된 객체를 반환하는 과정의 변환기 역할
 
 ### 3. ViewResolve
+> 클라이언트의 요청이 어떤 요청인지에 따라 어느 컨트롤러 혹은 역할에 전달할 것인지를 결정하는 역할
 
 ### 4. 정적 리소스
 > 클라이언트의 요청에 동적으로 생성되지 않고 초기화되어 있어 생성된 객체 혹은 리소스의 값을 그대로 전달하는 경우를 말합니다
@@ -48,11 +51,16 @@
 ### 6. index 페이지와 파비콘
 
 ### 7. Thymeleaf
+> 뷰를 유연하게 제공하기 위해 활용하는 템플릿 엔진
 
 ### 8. HtmlUnit
+> 좀 더 상세한 Http 테스트를 dom 객체 액세스 수준으로 할 수 있게하는 라이브러리 
 
 ### 9. ExceptionHandler
+> 클래스 혹은 글로벌 수준에서 Http 상태에 따른 예외 처리를 가능하게 하는 기능
 
 ### 10. Spring HATEOAS
+> 요청 데이터에 대한 연관 링크 정보를 같이 뭍혀서 보내는 기능
 
 ### 11. CORS
+> Cross Origin Resource Sharing 의 약자로 SOP (Single Origin Policy)의 제약을 해결하기 위한 기술, 즉 다른 Origin (scheme:host:port) 으로는 전송할 수 없으나 이를 제한적으로 풀어주는 기능 
