@@ -6,6 +6,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +15,7 @@ import java.util.List;
 @ConfigurationProperties // 외부 configuration 값을 (properties or yml) configuration class 로 바인딩 한다
 public class AppConfig {
 
+    @NotNull(message = "")
     private String name;
     private String environment;
     private List<String> servers = new ArrayList<>();

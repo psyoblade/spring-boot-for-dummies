@@ -1,0 +1,9 @@
+service:
+  id: bigmama-10mins
+  servers:
+    - localhost:80
+    - localhost:8080
+  serviceId: tablesnap-import
+  metadataId: nchq:game:an:character
+  timeout: 3600
+
