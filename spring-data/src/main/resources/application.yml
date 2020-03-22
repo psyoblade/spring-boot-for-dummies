@@ -1,0 +1,10 @@
+spring:
+  h2:
+    console:
+      enabled: false
+  datasource:
+    url: jdbc:mysql://localhost:3306/springboot?useSSL=false
+    username: psyoblade
+    password: 2
+    hikari:
+      maximum-pool-size: 5
