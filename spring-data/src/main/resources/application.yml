@@ -3,8 +3,8 @@ spring:
     console:
       enabled: false
   datasource:
-    url: jdbc:mysql://localhost:3306/springboot?useSSL=false
+    url: jdbc:postgresql://localhost:5432/springboot
     username: psyoblade
-    password: 2
+    password: pass
     hikari:
       maximum-pool-size: 5

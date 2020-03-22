@@ -1,4 +1,4 @@
-package me.suhyuk.spring.data.h2;
+package me.suhyuk.spring.data.jdbc.mysql;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -6,16 +6,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.Statement;
 
 //@Component
-public class H2Runner implements ApplicationRunner {
+public class MySQLRunner implements ApplicationRunner {
 
-    private Logger logger = LoggerFactory.getLogger(H2Runner.class);
+    private Logger logger = LoggerFactory.getLogger(MySQLRunner.class);
 
     @Autowired
     private DataSource dataSource;
@@ -32,10 +31,15 @@ public class H2Runner implements ApplicationRunner {
             logger.info("URL:'{}', UserName:'{}'", url, userName);
 
             Statement statement = connection.createStatement();
-            String sql = "CREATE TABLE user (id int not null, name varchar(255), primary key (id))";
+            String sql = "CREATE TABLE IF NOT EXISTS Users (" +
+                    "id int NOT NULL AUTO_INCREMENT" +
+                    ", name varchar(255)" +
+                    ", age int" +
+                    ", PRIMARY KEY (id)" +
+                    ")";
             statement.executeUpdate(sql);
         }
 
-        jdbcTemplate.execute("insert into user values (1, 'park.suhyuk')");
+        jdbcTemplate.execute("INSERT INTO Users (name, age) VALUES ('park.suhyuk', 40)");
     }
 }
