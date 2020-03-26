@@ -1,4 +1,4 @@
-package me.suhyuk.spring.data;
+package me.suhyuk.spring.data.jpa;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

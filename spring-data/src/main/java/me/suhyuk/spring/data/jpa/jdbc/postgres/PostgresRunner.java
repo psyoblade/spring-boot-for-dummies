@@ -1,4 +1,4 @@
-package me.suhyuk.spring.data.jdbc.h2;
+package me.suhyuk.spring.data.jpa.jdbc.postgres;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,9 +12,9 @@ import java.sql.Connection;
 import java.sql.Statement;
 
 //@Component
-public class H2Runner implements ApplicationRunner {
+public class PostgresRunner implements ApplicationRunner {
 
-    private Logger logger = LoggerFactory.getLogger(H2Runner.class);
+    private Logger logger = LoggerFactory.getLogger(PostgresRunner.class);
 
     @Autowired
     private DataSource dataSource;
@@ -28,13 +28,19 @@ public class H2Runner implements ApplicationRunner {
         try (Connection connection = dataSource.getConnection()) {
             String url = connection.getMetaData().getURL();
             String userName = connection.getMetaData().getUserName();
-            logger.info("URL:'{}', UserName:'{}'", url, userName);
+            String driverName = connection.getMetaData().getDriverName();
+            logger.info("URL:'{}', UserName:'{}', driverName: '{}", url, userName, driverName);
 
             Statement statement = connection.createStatement();
-            String sql = "CREATE TABLE user (id int not null, name varchar(255), primary key (id))";
+            String sql = "CREATE TABLE IF NOT EXISTS Users (" +
+                    "id int NOT NULL " +
+                    ", name varchar(255)" +
+                    ", age int" +
+                    ", PRIMARY KEY (id)" +
+                    ")";
             statement.executeUpdate(sql);
         }
 
-        jdbcTemplate.execute("insert into user values (1, 'park.suhyuk')");
+        jdbcTemplate.execute("INSERT INTO Users (id, name, age) VALUES (1, 'park.suhyuk', 40)");
     }
 }

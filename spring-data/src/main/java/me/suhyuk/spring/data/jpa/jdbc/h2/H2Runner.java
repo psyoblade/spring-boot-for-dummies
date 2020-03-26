@@ -1,4 +1,4 @@
-package me.suhyuk.spring.data.jdbc.mysql;
+package me.suhyuk.spring.data.jpa.jdbc.h2;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,9 +12,9 @@ import java.sql.Connection;
 import java.sql.Statement;
 
 //@Component
-public class MySQLRunner implements ApplicationRunner {
+public class H2Runner implements ApplicationRunner {
 
-    private Logger logger = LoggerFactory.getLogger(MySQLRunner.class);
+    private Logger logger = LoggerFactory.getLogger(H2Runner.class);
 
     @Autowired
     private DataSource dataSource;
@@ -31,15 +31,10 @@ public class MySQLRunner implements ApplicationRunner {
             logger.info("URL:'{}', UserName:'{}'", url, userName);
 
             Statement statement = connection.createStatement();
-            String sql = "CREATE TABLE IF NOT EXISTS Users (" +
-                    "id int NOT NULL AUTO_INCREMENT" +
-                    ", name varchar(255)" +
-                    ", age int" +
-                    ", PRIMARY KEY (id)" +
-                    ")";
+            String sql = "CREATE TABLE user (id int not null, name varchar(255), primary key (id))";
             statement.executeUpdate(sql);
         }
 
-        jdbcTemplate.execute("INSERT INTO Users (name, age) VALUES ('park.suhyuk', 40)");
+        jdbcTemplate.execute("insert into user values (1, 'park.suhyuk')");
     }
 }

@@ -1,4 +1,4 @@
-# 스프링 데이터 JDBC & JPA (Java Persistence API)
+# 스프링 데이터
 
 ## 스프링 데이터 JDBC
 
@@ -79,7 +79,7 @@ docker exec -it postgres_boot psql -U psyoblade # 직접 접속하는 방법도 
 * [PostgreSQL Syntax](https://www.postgresqltutorial.com/postgresql-select/)
 
 
-## 스프링 데이터 JPA
+## 스프링 데이터 JPA (Java Persistence API)
 > ORM, 스프링 JPA 란?
 > ORM (Object Relation Mapping) 과 JPA (Java Persistence API) 의 개념적인 불일치를 해결하는 프레임워크 입니다
 * 객체 지향에서는 다양한 primitive types, class instance 등 다양한 유형을 가지고 있지만 Relational DB 의 Table 은 정해진 것만 존재하기 때문에 이에 대해 1:1 Mapping 이 사실상 어려울 것이다 
@@ -138,3 +138,22 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 * [Project Lombok](https://www.baeldung.com/intro-to-project-lombok)
 * [Spring Data JPA @Query](https://www.baeldung.com/spring-data-jpa-query)
 * [Flyway Database Migration](https://flywaydb.org/getstarted/)
+
+
+## 스프링 데이터 Redis
+```bash
+docker run --name redis_boot -d redis redis-server --appendonly yes
+--
+docker run -p 6379:6379 --name redis_boot -d redis
+docker exec -it redis_boot redis-cli
+```
+* Redis 를 띄웠다면 StringRedisTemplate 또는 RedisTemplate 을 통해서 사용할 수 있습니다
+
+```redis
+127.0.0.1:6379> keys *
+1) "name"
+2) "id"
+
+127.0.0.1:6379> get name
+"suhyuk"
+```
