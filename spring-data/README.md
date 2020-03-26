@@ -1,4 +1,4 @@
-# 스프링 데이터 JDBC & JPA
+# 스프링 데이터 JDBC & JPA (Java Persistence API)
 
 ## 스프링 데이터 JDBC
 
@@ -110,6 +110,25 @@ docker exec -it psql_boot bash
 psql psyoblade springboot
 ```
 
+### 테스트 환경과 라이브 환경의 분리
+* application.yml 파일을 분리하고 사용하는 방법이 명시적이긴 합니다만, 귀찮을 수 있습니다
+* 더욱 간단한 방법은 @DataJpaTest 을 통해서 slicing 테스트를 수행하는 경우 application.yml 설정의 영향을 받지 않습니다. 
+
+### JPA 의 마법과 같은 구현
+```java
+public interface AccountRepository extends JpaRepository<Account, Long> {
+    Account findByUsername(String username);
+
+    @Query(nativeQuery = true, value = "select * from account where password = ?1")
+    Optional<Account> findByPassword(String password);
+}
+```
+* 1. 위와 같이 JpaRepository 를 상속받아서 Account 객체의 username 필드만 존재하면 findByUsername 과 같이 이름만 규약에 맞게 생성하는 경우 findBy 메소드가 자동으로 구현됩니다
+* 2. 필요에 따라서는 @Query 어노테이션을 통해서 직접 쿼리를 수행할 수도 있다
+  * Optional<Account> 값을 반환하게 할 수도 있습니다
+  * 조회 시에는 반드시 * 를 통해서 모두 가져와야 객체가 정상적으로 반환됩니다
+
 ### 레퍼런스
 * [Hibernate ORM](http://hibernate.org/orm/what-is-an-orm)
 * [Project Lombok](https://www.baeldung.com/intro-to-project-lombok)
+* [Spring Data JPA @Query](https://www.baeldung.com/spring-data-jpa-query)
