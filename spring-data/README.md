@@ -128,7 +128,13 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
   * Optional<Account> 값을 반환하게 할 수도 있습니다
   * 조회 시에는 반드시 * 를 통해서 모두 가져와야 객체가 정상적으로 반환됩니다
 
+### Flyway 를 통한 데이터베이스 마이그레이션
+> 데이터베이스의 변경 사항을 차곡차곡 쌓아서 백업이 가능한 도구이며 flyway 는 sql 파일을 사용합니다
+* resources/db/migration 경로에 V1__init.sql 형식의 파일로 init 명만 변경하여 작성하게 되면 해당 스키마를 계속 보전해 줍니다
+* 한 번 생성된 파일은 절대 건드려서는 안 되면 온전히 새로운 파일을 만들어야 합니다
+
 ### 레퍼런스
 * [Hibernate ORM](http://hibernate.org/orm/what-is-an-orm)
 * [Project Lombok](https://www.baeldung.com/intro-to-project-lombok)
 * [Spring Data JPA @Query](https://www.baeldung.com/spring-data-jpa-query)
+* [Flyway Database Migration](https://flywaydb.org/getstarted/)
