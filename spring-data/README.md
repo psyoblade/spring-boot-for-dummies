@@ -147,9 +147,9 @@ docker run --name redis_boot -d redis redis-server --appendonly yes
 docker run -p 6379:6379 --name redis_boot -d redis
 docker exec -it redis_boot redis-cli
 ```
-* Redis 를 띄웠다면 StringRedisTemplate 또는 RedisTemplate 을 통해서 사용할 수 있습니다
 
-```redis
+* Redis 를 띄웠다면 StringRedisTemplate 또는 RedisTemplate 을 통해서 사용할 수 있습니다
+```text
 127.0.0.1:6379> keys *
 1) "name"
 2) "id"
@@ -157,3 +157,39 @@ docker exec -it redis_boot redis-cli
 127.0.0.1:6379> get name
 "suhyuk"
 ```
+
+* 외에도 참고할 만한 내용은 아래의 커맨드와 spring.redis.* 설정 파일
+```text
+keys {pattern}
+get {key}
+hgetall {key}
+hget {key} {column}
+```
+
+* 1. Repository 테스트를 위해 Account 클래스를 @RedisHash("accounts") 로 생성합니다
+* 2. CrudRepository<DataType, KeyType> 을 상속받은 AccountRepository (Bean) 를 생성합니다
+* 3. 이렇게 생성된 값은 아래와 같으며 이러한 해시 값은 해시값이므로 hashget or hashgetall 을 통해 가져올 수 있습니다
+```text
+127.0.0.1:6379> keys *
+1) "accounts"
+2) "accounts:0cc527a1-5325-4da9-89b9-e72f72d79cf7"
+3) "name"
+4) "id"
+
+127.0.0.1:6379> hget accounts:0cc527a1-5325-4da9-89b9-e72f72d79cf7 email
+"psyoblade@suhyuk.me"
+
+127.0.0.1:6379> hgetall accounts:0cc527a1-5325-4da9-89b9-e72f72d79cf7
+1) "_class"
+2) "me.suhyuk.spring.data.redis.account.Account"
+3) "id"
+4) "0cc527a1-5325-4da9-89b9-e72f72d79cf7"
+5) "username"
+6) "suhyuk"
+7) "email"
+8) "psyoblade@suhyuk.me"
+```
+
+### 레퍼런스
+* [Spring Data Redis](https://spring.io/projects/spring-data-redis)
+* [Redis Comamnds](https://redis.io/commands)
