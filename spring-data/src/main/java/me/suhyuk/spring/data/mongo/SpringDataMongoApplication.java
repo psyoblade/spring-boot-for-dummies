@@ -1,7 +1,5 @@
 package me.suhyuk.spring.data.mongo;
 
-import me.suhyuk.spring.data.mongo.account.Account;
-import me.suhyuk.spring.data.mongo.account.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
@@ -16,7 +14,6 @@ public class SpringDataMongoApplication {
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
-
 
 	@Autowired
 	private AccountRepository accountRepository;
@@ -35,7 +32,7 @@ public class SpringDataMongoApplication {
 
 	private void readAccountUsingRepository(String id) {
 		Optional<Account> foundAccount = accountRepository.findById(id);
-		System.out.println(foundAccount.toString());
+		System.out.println("##### LIVE ##### : 스프링 어플리케이션 기동" + foundAccount.toString());
 	}
 
 	private Account insertAccountObject() {

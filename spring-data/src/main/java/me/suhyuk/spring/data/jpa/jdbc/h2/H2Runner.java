@@ -6,12 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.Statement;
 
-//@Component
+@Component
 public class H2Runner implements ApplicationRunner {
 
     private Logger logger = LoggerFactory.getLogger(H2Runner.class);
@@ -31,10 +32,10 @@ public class H2Runner implements ApplicationRunner {
             logger.info("URL:'{}', UserName:'{}'", url, userName);
 
             Statement statement = connection.createStatement();
-            String sql = "CREATE TABLE user (id int not null, name varchar(255), primary key (id))";
+            String sql = "CREATE TABLE Users (id int NOT NULL, name VARCHAR(255), PRIMARY KEY (id))";
             statement.executeUpdate(sql);
         }
 
-        jdbcTemplate.execute("insert into user values (1, 'park.suhyuk')");
+        jdbcTemplate.execute("INSERT INTO Users (id, name) VALUES (1, 'park.suhyuk')");
     }
 }

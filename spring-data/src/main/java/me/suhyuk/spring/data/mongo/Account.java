@@ -1,8 +1,7 @@
-package me.suhyuk.spring.data.mongo.account;
+package me.suhyuk.spring.data.mongo;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.redis.core.RedisHash;
 
 @Document(collection = "accounts")
 public class Account {

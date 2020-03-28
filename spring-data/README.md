@@ -248,3 +248,15 @@ docker exec -it mongo_boot bash
 * 마찬가지로 @DataMongoTest 라는 슬라이싱 테스트를 통해 수행할 수 있으며 Repository 예제와 연동하여 테스트 합니다
 
 ### 레퍼런스
+* [MongoDB support](https://docs.spring.io/spring-data/mongodb/docs/current/reference/html/#mongo.core)
+
+
+## 삽질을 통해 얻은 스프링 관련 팁
+
+### 스프링 프로파일 관련
+* 프로파일 정보는 테스트 환경에서만 설정할 수 있으며, 개별 클래스 단위로 설정해 주어야만 정상적으로 동작합니다
+* 테스트 환경에서는 패키지 내의 모든 컴포넌트 스캔이 이루어지므로 어플리케이션 수준에서 코드가 들어가 있다면 (ApplicationRunner) 반드시 ComponentScan Filter 를 통해 제거해 준 별도의 Test Class 를 생성해 주어야만 합니다
+
+### 개발 프로세스 및 습관
+* 어떠한 경우라도 반드시 테스트 코드와 개발 후 검증 코드를 만들어야만 한다. API 수준에서 맞는 것 같지만, 다르게 동작하는 경우가 너무나 많다
+* 특히, 스프링의 경우 숨겨진 경우가 많고, 내부 구조를 명확히 모르기 때문에 완전히 동작하는 것을 확실히 알 수 있을 때 까지 단위 테스트를 작성해야만 한다
