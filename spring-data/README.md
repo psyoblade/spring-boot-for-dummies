@@ -249,6 +249,7 @@ docker exec -it mongo_boot bash
 
 ### 레퍼런스
 * [MongoDB support](https://docs.spring.io/spring-data/mongodb/docs/current/reference/html/#mongo.core)
+* [Working with SQL Databases](https://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/htmlsingle/#boot-features-sql)
 
 
 ## 삽질을 통해 얻은 스프링 관련 팁
