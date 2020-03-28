@@ -21,3 +21,9 @@ spring:
   profiles: redis
   redis:
     port: 6379  # default spring redis port
+
+---
+spring:
+  profiles: mongo
+  redis:
+    port: 27017  # default spring mongodb port

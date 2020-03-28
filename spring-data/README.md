@@ -1,7 +1,6 @@
 # 스프링 데이터
 
 ## 스프링 데이터 JDBC
-
 ### Hikari Connection Pooling
 > 레퍼런스에 포함된 FAQ 문서를 참고하여 기본 값과 최적치를 본인이 설정해야 합니다 
 
@@ -141,6 +140,14 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
 
 ## 스프링 데이터 Redis
+```xml
+<xml>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-data-redis</artifactId>
+    </dependency>
+</xml>
+```
 ```bash
 docker run --name redis_boot -d redis redis-server --appendonly yes
 --
@@ -148,6 +155,7 @@ docker run -p 6379:6379 --name redis_boot -d redis
 docker exec -it redis_boot redis-cli
 ```
 
+### (String)RedisTemplate 을 이용한 데이터 처리
 * Redis 를 띄웠다면 StringRedisTemplate 또는 RedisTemplate 을 통해서 사용할 수 있습니다
 ```text
 127.0.0.1:6379> keys *
@@ -166,6 +174,7 @@ hgetall {key}
 hget {key} {column}
 ```
 
+### @RedisHash 를 이용한 Repository 연동
 * 1. Repository 테스트를 위해 Account 클래스를 @RedisHash("accounts") 로 생성합니다
 * 2. CrudRepository<DataType, KeyType> 을 상속받은 AccountRepository (Bean) 를 생성합니다
 * 3. 이렇게 생성된 값은 아래와 같으며 이러한 해시 값은 해시값이므로 hashget or hashgetall 을 통해 가져올 수 있습니다
@@ -193,3 +202,49 @@ hget {key} {column}
 ### 레퍼런스
 * [Spring Data Redis](https://spring.io/projects/spring-data-redis)
 * [Redis Comamnds](https://redis.io/commands)
+* [Spring Profiles](https://www.baeldung.com/spring-profiles)
+
+
+## 스프링 데이터 MongoDB
+* 몽고디비 의존성 추가
+```xml
+<xml>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-data-mongodb</artifactId>
+    </dependency>
+    <dependency>
+        <groupid>de.flapdoodle.embed</groupid>
+        <artifactid>de.flapdoodle.embed.mongo</artifactid>
+    </dependency>
+</xml>
+```
+
+### 도커를 통한 MongoDB 연동
+```bash
+docker run -p 27017:27017 --name mongo_boot -d mongo
+docker exec -it mongo_boot bash
+```
+
+### @Document 를 이용한 Repository 연동
+* 1. Repository 테스트를 위해 Account 클래스를 @Document(collection = "accounts") 로 생성합니다
+* 2. MongoTemplate 을 통해 손쉽게 insert(new Account()) 가 가능합니다
+* 3. 이렇게 생성된 값은 아래와 같으며 몽고 클라이언트를 통해 데이터를 가져올 수 있습니다
+* 4. 마찬가지로 MongoRepository<DocumentType, KeyType> 을 통해 Repository 를 사용할 수도 있습니다
+* 몽고디비 데이터 조회
+```text
+> use test
+> db.accounts.findOne()
+{
+	"_id" : ObjectId("5e7ec7a12d50655527300b31"),
+	"username" : "psyoblade",
+	"email" : "psyoblade@hyuk.me",
+	"_class" : "me.suhyuk.spring.data.mongo.account.Account"
+}
+```
+
+### Embedded 몽고디비를 통한 단위 테스트 예제
+* de.flapdoodle.embed.mongo 라는 특이한 이름의 패키지를 통해 단위테스트를 수행할 수 있습니다
+* 마찬가지로 @DataMongoTest 라는 슬라이싱 테스트를 통해 수행할 수 있으며 Repository 예제와 연동하여 테스트 합니다
+
+### 레퍼런스
