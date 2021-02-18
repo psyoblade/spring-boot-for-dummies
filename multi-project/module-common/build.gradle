@@ -1,0 +1,6 @@
+dependencies {
+    implementation "jakarta.xml.bind:jakarta.xml.bind-api:2.3.2"
+    compile('org.springframework.boot:spring-boot-starter-data-jpa')
+    runtime('com.h2database:h2')
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+}
