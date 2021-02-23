@@ -12,4 +12,24 @@ public class BoardServiceImpl implements BoardService{
     public List<BoardItem> selectBoardList() throws Exception {
         return null;
     }
+
+    @Override
+    public void insertBoard(BoardItem boardItem) throws Exception {
+
+    }
+
+    @Override
+    public BoardItem selectBoardDetail(int boardIndex) throws Exception {
+        return null;
+    }
+
+    @Override
+    public void updateBoard(BoardItem boardItem) throws Exception {
+
+    }
+
+    @Override
+    public void deleteBoard(int boardIndex) throws Exception {
+
+    }
 }

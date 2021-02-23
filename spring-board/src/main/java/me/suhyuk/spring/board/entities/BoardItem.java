@@ -89,4 +89,18 @@ public class BoardItem {
     public void setUpdatedDatetime(String updatedDatetime) {
         this.updatedDatetime = updatedDatetime;
     }
+
+    @Override
+    public String toString() {
+        return "BoardItem{" +
+                "boardIdx=" + boardIdx +
+                ", title='" + title + '\'' +
+                ", contents='" + contents + '\'' +
+                ", hitCnt=" + hitCnt +
+                ", creatorId='" + creatorId + '\'' +
+                ", createdDatetime='" + createdDatetime + '\'' +
+                ", updaterId='" + updaterId + '\'' +
+                ", updatedDatetime='" + updatedDatetime + '\'' +
+                '}';
+    }
 }

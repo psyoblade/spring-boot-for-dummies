@@ -8,4 +8,8 @@ import java.util.List;
 @Service
 public interface BoardService {
     List<BoardItem> selectBoardList() throws Exception;
+    void insertBoard(BoardItem boardItem) throws Exception;
+    BoardItem selectBoardDetail(int boardIndex) throws Exception;
+    void updateBoard(BoardItem boardItem) throws Exception;
+    void deleteBoard(int boardIndex) throws Exception;
 }
