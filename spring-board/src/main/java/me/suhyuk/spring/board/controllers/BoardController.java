@@ -1,11 +1,13 @@
 package me.suhyuk.spring.board.controllers;
 
 import me.suhyuk.spring.board.entities.BoardItem;
+import me.suhyuk.spring.board.entities.ResponseMessage;
 import me.suhyuk.spring.board.repositoreis.BoardRepository;
 import me.suhyuk.spring.board.services.BoardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
@@ -50,18 +52,19 @@ public class BoardController {
         return boardItem.toString();
     }
 
-    @PostMapping(value = "/xml", produces = MediaType.APPLICATION_XML_VALUE)
-    @ResponseBody()
-    public BoardItem readBoardItemByXml(@RequestBody BoardItem boardItem) {
-        Optional<BoardItem> found = boardRepository.findById(boardItem.getBoardIdx());
-        return found.get();
+    @ResponseBody
+    @ExceptionHandler(HttpMediaTypeNotAcceptableException.class)
+    public String handleHttpMediaTypeNotAcceptableException() {
+        return "acceptable MIME type:" + MediaType.APPLICATION_JSON_VALUE;
     }
 
-    @PostMapping(value = "/read", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody()
-    public BoardItem readBoardItemByJson(@RequestBody BoardItem boardItem) {
+    @PostMapping(value = "/read",
+            consumes = { MediaType.APPLICATION_JSON_VALUE },
+            produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
+    @ResponseBody
+    public ResponseMessage readBoardItemByXml(@RequestBody BoardItem boardItem) {
         Optional<BoardItem> found = boardRepository.findById(boardItem.getBoardIdx());
-        return found.get();
+        return new ResponseMessage(boardItem.toString());
     }
 
     @RequestMapping("/delete")
