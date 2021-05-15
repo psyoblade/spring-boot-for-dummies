@@ -1,0 +1,44 @@
+
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+}
+
+ext {
+    springBootVersion  = '2.1.6.RELEASE'
+    springVersion = '4.3.21.RELEASE'
+    junitVersion = '4.12'
+    apacheCommonsVersion = '3.6.1'
+    guavaVersion = '28.0-jre'
+}
+
+repositories {
+    mavenCentral()
+}
+
+allprojects {
+    apply plugin: 'java'
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+}
+
+dependencies {
+    api group: 'org.apache.commons', name: 'commons-math3', version: apacheCommonsVersion
+
+    implementation group: 'com.google.guava', name: 'guava', version: guavaVersion
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: springBootVersion
+
+    testImplementation group: 'junit', name: 'junit', version: junitVersion
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'me.suhyuk'
+            artifactId = 'common-logger'
+            version = '1.0'
+
+            from components.java
+        }
+    }
+}
