@@ -36,7 +36,7 @@ public String toString() {
   - [Admin Client Configuration](https://docs.confluent.io/platform/current/installation/configuration/admin-configs.html) 페이지를 참고하여 학습합니다
   - 웹 관리도구의 경우 클러스터 서비스에 최대한 영향이 없어야 하며, 부하의 원인이 되어서는 안된다는 것이 원칙
     - API 및 Connection 타임아웃은 각각 6초, 3초로 접속 실패 시에 최대한 빠르게 종료합니다
-    - 재시도 횟수는 500ms 백오프 후에 최대 1회만 수행하도록 합니다
+    - 재시도 횟수는 500ms 백오프 후에 최대 1회만 수행하도록 하여 아래 설정으로 약 10시간 중지 후 재접속 성공
 ```java
     // API 요청에는 접속이 필수이므로, 접속의 타임아웃 값은 API 요청 타임아웃 보다는 작아야 한다 - 3/6초로 축소
     props.put(CommonClientConfigs.REQUEST_TIMEOUT_MS_CONFIG, 3000); // 커넥션 생성 요청 시에 타임아웃 시간 (default: 30 seconds)
