@@ -1,0 +1,11 @@
+bootJar {
+    enabled = false
+}
+jar {
+    enabled = true
+}
+dependencies {
+    implementation group: 'org.apache.kafka', name: 'kafka-clients', version: kafkaVersion
+    implementation('org.springframework.boot:spring-boot-starter-data-jpa')
+    testImplementation('org.springframework.boot:spring-boot-starter-test')
+}

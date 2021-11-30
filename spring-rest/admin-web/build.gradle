@@ -1,0 +1,6 @@
+dependencies {
+    implementation group: 'org.apache.kafka', name: 'kafka-clients', version: kafkaVersion
+    implementation('org.springframework.boot:spring-boot-starter-web')
+    annotationProcessor('org.springframework.boot:spring-boot-configuration-processor')
+    testImplementation('org.springframework.boot:spring-boot-starter-test')
+}

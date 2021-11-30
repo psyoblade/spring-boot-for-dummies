@@ -11,6 +11,10 @@ buildscript {
     }
 }
 
+ext {
+    lombokVersion = '1.16.20'
+}
+
 subprojects {
     group 'me.suhyuk'
     version '1.0'
