@@ -86,4 +86,6 @@ public String toString() {
   - admin-kafka : kafka 에 의존적인 CRUD Domain (DTO, DAO) 및 Repository 구현
     - me.suhyuk.spring.admin.domain.{kafka, druid} 패키지 구성
     - 어차피 dao 를 사용할 일이 없기 때문에 dto, dao 패키지 레벨을 고려하지 않아도 될 것 같음
-  - admin-druid : druid ...
+  - 문제점은 configuration 정보는 web 단에서 application.yml 파일로 유지되어야 하는데, 외부 의존성이 있는 경우는 분리가 어려움
+    - application.yml 파일을 복제본을 유지하는 것도 조지 않으므로, web 단에서 kafka 의존성을 가져갈 수 밖에 없는 구조가 된다
+    - 즉, external 의존성을 가진 경우는 스프링의 의존성 주입을 사용하는 순간 웹에 bound 되어 프로젝트 분리가 어렵게 되는 것 같다
