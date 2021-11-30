@@ -55,3 +55,35 @@ public String toString() {
 * Zookeeper 접근이 일시적으로 안 되는 경우
   - Kafka 접속만 된다면, 조회는 가능 하지만, POST 등의 변경 시에 500 오류발생
     - 이 경우에도 기존에 전송된 토픽이 생성되어 있는 경우가 있으므로, 주의가 필요함
+
+### 4-2-4. 멀티 프로젝트 형태로 역할을 구분할 수 있도록 리팩토링
+> `web <-> api <-> db` 와 같이 web 은 api 만 알면 구현이 가능하고, api 는 db 만 알면 구현이 가능해야 한다
+> 즉, web 에서는 컨트롤러와 service 만 이용하여 단순한 호출을 통한 컨트롤러 구현만 존재해야 하며, 저장소의 구현과 무관하게 개발될 수 있어야 한다
+> api 수준에서는 비지니스 로직 등이 포함될 수 있을 듯하고, 예외 처리에 대한 부분이 포함되면 좋을 것 같다
+> common 경우에는 잘 변경되지 않는 domain 객체 및 crud 등의 기계적인 transaction 처리에 대한 부분을 처리할 수 있도록 구현되면 좋을 듯 하다
+* [스프링 그레이들을 활용하여 멀티 프로젝트로 전환](https://jojoldu.tistory.com/123)
+  - spring-rest-api : service 패키지 내에는 독립적인 기능을 제공할 수 있는 서비스들이 포함됩니다
+    - 웹 서비스에서는 어떠한 서비스(kafka, druid)를 사용하더라도 서비스만 활용하면 domain 을 몰라야 합니다
+  - spring-rest-common : domain(dto, dao), repository 즉, 저장소 관리를 위한 dao 객체를 저장
+    - persistent 레이어에 대해 커플링 되어 있는 도메인 처리 구현이 포함됩니다.
+  - spring-rest-web : 순수하게 컨트롤러만 존재하므로, controller 라는 패키지를 사용하지 않는 듯
+* [멀티 모듈 설계 이야기](https://techblog.woowahan.com/2637/)
+  - 결국에는 각 프로젝트의 역할을 명확하게 구분하고, 의존성을 최소화 하고, 개발 및 유지보수에 유리하게 하기 위함을 잊어서는 안되겠다 
+  - api 프로젝트의 설계
+    - 특정 서비스(kafka, druid 등)에 의존성을 가지는 서비스로 개발될 수 있습니다.
+    - 필요에 따라서 별도의 모듈로 구분하여 의존성을 별도로 관리하는 것도 좋습니다. (api-kafka, api-druid)
+    - 즉, 하나의 모듈이 수정/교체되는 경우에도 다른 서비스는 영향을 받지 않을 수 있기 때문입니다
+  - common 프로젝트의 설계
+    - 말 그대로 공통이므로, 최대한 의존관계가 없어야 하며, 순수 Java Class 로 구현되어야 합니다
+  - web 프로젝트의 설계
+    - 컨트롤러의 역할을 말하며, 순수하게 스펙만 정의할 수 있는 형태로 구현되어야 합니다
+* 카프카, 드루이드 관리 도구 설계에 대한 방향
+  - 패키지 이름에는 복수를 사용하면 표현이 달라질 수 있으므로 단수를 사용하기로 하며, web 의 경우에도 controller 등을 반드시 명시합니다
+  - admin-web : kafka, druid 서비스를 이용하여 컨트롤러를 구현
+    - me.suhyuk.spring.admin.controller.{kafka, druid} 패키지 구성
+  - admin-api : kafka, druid 저장소를 접근하는 서비스를 구현
+    - me.suhyuk.spring.admin.service.{kafka, druid} 패키지 구성
+  - admin-kafka : kafka 에 의존적인 CRUD Domain (DTO, DAO) 및 Repository 구현
+    - me.suhyuk.spring.admin.domain.{kafka, druid} 패키지 구성
+    - 어차피 dao 를 사용할 일이 없기 때문에 dto, dao 패키지 레벨을 고려하지 않아도 될 것 같음
+  - admin-druid : druid ...
