@@ -1,11 +1,10 @@
 package me.suhyuk.spring.boot.rest.services.kafka;
 
 import lombok.AllArgsConstructor;
-import me.suhyuk.spring.boot.rest.dto.kafka.KafkaTopicConfigs;
-import me.suhyuk.spring.boot.rest.dto.kafka.KafkaTopicInfo;
-import me.suhyuk.spring.boot.rest.dto.kafka.KafkaTopicList;
+import me.suhyuk.spring.boot.rest.dto.kafka.*;
 import me.suhyuk.spring.boot.rest.utils.Pair;
 import org.apache.kafka.clients.admin.*;
+import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.config.ConfigResource;
 import org.springframework.stereotype.Service;
 
@@ -49,5 +48,21 @@ public class KafkaAdminService implements IKafkaAdminService {
     public void createTopic(String clusterName, String topicName, int numPartitions, short replicationFactor) throws ExecutionException, InterruptedException {
         NewTopic newTopic = new NewTopic(topicName, numPartitions, replicationFactor);
         getClient(clusterName).createTopics(Collections.singleton(newTopic)).all().get();
+    }
+
+    public void updateTopicAssignment(String clusterName, UpdateTopicRequest req) throws ExecutionException, InterruptedException {
+        Map<TopicPartition, Optional<NewPartitionReassignment>> assignments = new HashMap<>();
+        for (UpdateTopicRequest.KafkaReplicaReassignment reassignment : req.getReassignments()) {
+            TopicPartition key = new TopicPartition(reassignment.getTopicName(), reassignment.getPartitionNumber());
+            NewPartitionReassignment value = new NewPartitionReassignment(reassignment.getBrokerIDs());
+            assignments.put(key, Optional.of(value));
+        }
+        getClient(clusterName).alterPartitionReassignments(assignments).all().get();
+    }
+
+    public void createTopicPartition(String clusterName, String topicName, CreatePartitionRequest req) throws ExecutionException, InterruptedException {
+        Map<String, NewPartitions> partitions = new HashMap<>();
+        partitions.put(topicName, NewPartitions.increaseTo(req.getTotalCount()));
+        getClient(clusterName).createPartitions(partitions).all().get();
     }
 }

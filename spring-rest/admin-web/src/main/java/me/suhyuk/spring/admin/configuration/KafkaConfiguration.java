@@ -1,10 +1,14 @@
 package me.suhyuk.spring.admin.configuration;
 
+import jdk.nashorn.api.scripting.ScriptObjectMirror;
+import jdk.nashorn.internal.objects.annotations.Constructor;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.admin.AdminClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -23,15 +27,17 @@ public class KafkaConfiguration {
     private List<KafkaCluster> clusters;
     private static Map<KafkaCluster, AdminClient> adminClients;
 
+    @Getter
     public static class AdminClients {
         public static AdminClient of(String clusterName) {
-            return adminClients.get(KafkaCluster.builder().clusterName(clusterName).build());
+            KafkaCluster kafkaCluster = new KafkaCluster();
+            kafkaCluster.setClusterName(clusterName);
+            return adminClients.get(kafkaCluster);
         }
     }
 
     @Getter
     @Setter
-    @Builder
     public static class KafkaCluster {
         private String clusterName;
         private String clusterId;
@@ -52,9 +58,9 @@ public class KafkaConfiguration {
     }
 
     @Bean
-    public Map<KafkaCluster, AdminClient> registerAdminClients(KafkaConfiguration kafkaConfiguration) {
+    public Map<KafkaCluster, AdminClient> registerAdminClients() {
         Map<KafkaCluster, AdminClient> adminClients = new HashMap<>();
-        for (KafkaCluster kafkaCluster : kafkaConfiguration.getClusters()) {
+        for (KafkaCluster kafkaCluster : clusters) {
             String bootstrapServers = kafkaCluster.getBootstrapServers().stream().collect(Collectors.joining(","));
             Properties props = new Properties();
             props.put(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);

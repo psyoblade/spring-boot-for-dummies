@@ -61,18 +61,18 @@ public class KafkaAdminClientV1 implements IKafkaAdminClient {
     }
 
     // 파티션 구성을 변경
+    // 1. 주어진 클러스터, 토픽의 현재 구성 정보를 조회하고,
+    // 2. 조회된 정보에서 복제본 평준화를 위한 알고리즘을 수행하고,
+    // 3. 수행된 결과를 다시 재할당하는 명령을 수행하고
+    // 4. 수행된 결과를 반환합니다
     @Override
     public void updateTopicPartitions(String clusterName, String topicName, UpdateKafkaTopicRequest req) {
-//        Map<TopicPartition, Optional<NewPartitionReassignment>> assignments = new HashMap<>();
-//        for (UpdateKafkaTopicRequest.KafkaReplicaReassignment reassignment : req.getReassignments()) {
-//            TopicPartition key = new TopicPartition(reassignment.getTopicName(), reassignment.getPartitionNumber());
-//            NewPartitionReassignment value = new NewPartitionReassignment(reassignment.getBrokerIDs());
-//            assignments.put(key, Optional.of(value));
-//        }
-        // 1. 주어진 클러스터, 토픽의 현재 구성 정보를 조회하고,
-        // 2. 조회된 정보에서 복제본 평준화를 위한 알고리즘을 수행하고,
-        // 3. 수행된 결과를 다시 재할당하는 명령을 수행하고
-        // 4. 수행된 결과를 반환합니다
+        Map<TopicPartition, Optional<NewPartitionReassignment>> assignments = new HashMap<>();
+        for (UpdateKafkaTopicRequest.KafkaReplicaReassignment reassignment : req.getReassignments()) {
+            TopicPartition key = new TopicPartition(reassignment.getTopicName(), reassignment.getPartitionNumber());
+            NewPartitionReassignment value = new NewPartitionReassignment(reassignment.getBrokerIDs());
+            assignments.put(key, Optional.of(value));
+        }
         AdminClients.of(clusterName).alterPartitionReassignments(null);
     }
 
