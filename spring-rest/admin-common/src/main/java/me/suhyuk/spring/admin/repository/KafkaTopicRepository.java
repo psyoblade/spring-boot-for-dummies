@@ -6,10 +6,8 @@ import me.suhyuk.spring.admin.common.ExceptionUtils;
 import me.suhyuk.spring.admin.common.Pair;
 import me.suhyuk.spring.admin.dao.KafkaTopic;
 import me.suhyuk.spring.admin.dao.KafkaTopicDesc;
-import org.apache.kafka.clients.admin.AdminClient;
-import org.apache.kafka.clients.admin.NewTopic;
-import org.apache.kafka.clients.admin.TopicDescription;
-import org.apache.kafka.clients.admin.TopicListing;
+import org.apache.kafka.clients.admin.*;
+import org.apache.kafka.common.TopicPartition;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
@@ -81,6 +79,13 @@ public class KafkaTopicRepository {
     // DELETE 1 TOPIC
     public void deleteTopic(String clusterName, String topicName) {
         getClient(clusterName).deleteTopics(Collections.singleton(topicName));
+    }
+
+    // UPDATE 1 TOPIC PARTITION
+    public void updatePartition(String clusterName, String topicName, int numPartitions) {
+        TopicPartition topicPartition = new TopicPartition(topicName, numPartitions);
+        Map<TopicPartition, Optional<NewPartitionReassignment>> reassignments = Collections.singletonMap(topicPartition, Optional.empty());
+        getClient(clusterName).alterPartitionReassignments(reassignments);
     }
 
 }

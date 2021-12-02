@@ -1,8 +1,8 @@
 package me.suhyuk.spring.admin.configuration;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import me.suhyuk.spring.admin.common.Pair;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -10,10 +10,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Configuration
@@ -24,18 +21,39 @@ import java.util.stream.Collectors;
 public class KafkaConfiguration {
 
     private List<KafkaCluster> clusters;
+    private static Map<KafkaCluster, AdminClient> adminClients;
+
+    public static class AdminClients {
+        public static AdminClient of(String clusterName) {
+            return adminClients.get(KafkaCluster.builder().clusterName(clusterName).build());
+        }
+    }
 
     @Getter
     @Setter
+    @Builder
     public static class KafkaCluster {
         private String clusterName;
         private String clusterId;
         private List<String> bootstrapServers;
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            KafkaCluster that = (KafkaCluster) o;
+            return Objects.equals(clusterName, that.clusterName);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(clusterName);
+        }
     }
 
     @Bean
-    public Map<String, Pair<String, AdminClient>> registerAdminClients(KafkaConfiguration kafkaConfiguration) {
-        Map<String, Pair<String, AdminClient>> adminClients = new HashMap<>();
+    public Map<KafkaCluster, AdminClient> registerAdminClients(KafkaConfiguration kafkaConfiguration) {
+        Map<KafkaCluster, AdminClient> adminClients = new HashMap<>();
         for (KafkaCluster kafkaCluster : kafkaConfiguration.getClusters()) {
             String bootstrapServers = kafkaCluster.getBootstrapServers().stream().collect(Collectors.joining(","));
             Properties props = new Properties();
@@ -55,7 +73,7 @@ public class KafkaConfiguration {
             // 실패하는 경우 재시도하지 않으면, 일시적인 장애에도 서버를 계속 재시작 해주어야 하므로, 설정 조정이 필요함
             props.put(CommonClientConfigs.RETRIES_CONFIG, 1); // 리퀘스트 요청 실패 시에 최대 재시도하는 횟수 (default: 0 or 2147483647)
 
-            adminClients.put(kafkaCluster.getClusterName(), new Pair(kafkaCluster.getClusterId(), AdminClient.create(props)));
+            adminClients.put(kafkaCluster, AdminClient.create(props));
         }
         return adminClients;
     }

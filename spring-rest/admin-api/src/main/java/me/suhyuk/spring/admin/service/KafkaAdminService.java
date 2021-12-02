@@ -65,4 +65,10 @@ public class KafkaAdminService implements IKafkaAdminService {
     public void resetTopicConfigs(String clusterName, String topicName) {
         kafkaConfigsRepository.resetTopicConfigs(clusterName, topicName);
     }
+
+    @Override
+    public void updatePartition(String clusterName, String topicName, int numPartitions) {
+        kafkaTopicRepository.updatePartition(clusterName, topicName, numPartitions);
+    }
+
 }

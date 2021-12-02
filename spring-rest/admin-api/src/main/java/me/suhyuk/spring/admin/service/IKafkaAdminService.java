@@ -13,7 +13,7 @@ import java.util.concurrent.ExecutionException;
 public interface IKafkaAdminService {
 
     // CREATE 1 TOPIC
-    public void createTopic(String clusterName, CreateKafkaTopicRequest req) throws ExecutionException, InterruptedException;
+    void createTopic(String clusterName, CreateKafkaTopicRequest req) throws ExecutionException, InterruptedException;
 
     // DESCRIBE 1 TOPIC
     public KafkaTopicDesc describeTopic(String clusterName, String topicName) throws ExecutionException, InterruptedException;
@@ -22,7 +22,7 @@ public interface IKafkaAdminService {
     public List<KafkaTopic> listTopics(String clusterName) throws ExecutionException, InterruptedException;
 
     // DELETE 1 TOPIC
-    public void deleteTopic(String clusterName, String topicName);
+    void deleteTopic(String clusterName, String topicName);
 
     // GET 1 TOPIC CONFIGS
     public KafkaTopicConfigs getTopicConfigs(String clusterName, String topicName) throws ExecutionException, InterruptedException;
@@ -31,11 +31,14 @@ public interface IKafkaAdminService {
     public KafkaTopicsConfigs getTopicsConfigs(String clusterName) throws ExecutionException, InterruptedException;
 
     // UPDATE 1 TOPIC CONFIGS
-    public void setTopicConfigs(String clusterName, String topicName, Map<String, String> params) throws ExecutionException, InterruptedException;
+    void setTopicConfigs(String clusterName, String topicName, Map<String, String> params) throws ExecutionException, InterruptedException;
 
     // UPDATE N TOPIC CONFIGS
-    public void setTopicsConfigs(String clusterName, Map<String, Map<String, String>> params) throws ExecutionException, InterruptedException;
+    void setTopicsConfigs(String clusterName, Map<String, Map<String, String>> params) throws ExecutionException, InterruptedException;
 
     // RESET 1 TOPIC CONFIGS
-    public void resetTopicConfigs(String clusterName, String topicName);
+    void resetTopicConfigs(String clusterName, String topicName);
+
+    // UPDATE 1 TOPIC PARTITIONS
+    void updatePartition(String clusterName, String topicName, int numPartitions);
 }
