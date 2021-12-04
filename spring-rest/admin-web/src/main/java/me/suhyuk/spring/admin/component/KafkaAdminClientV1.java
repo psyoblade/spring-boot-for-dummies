@@ -1,5 +1,6 @@
 package me.suhyuk.spring.admin.component;
 
+import me.suhyuk.spring.admin.configuration.KafkaConfiguration;
 import me.suhyuk.spring.admin.configuration.KafkaConfiguration.AdminClients;
 import me.suhyuk.spring.admin.domain.KafkaTopicConfigs;
 import me.suhyuk.spring.admin.domain.KafkaTopicInfo;
@@ -11,6 +12,7 @@ import org.apache.kafka.clients.admin.NewPartitionReassignment;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.admin.TopicDescription;
 import org.apache.kafka.common.TopicPartition;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -20,10 +22,24 @@ import java.util.stream.Collectors;
 @Component
 public class KafkaAdminClientV1 implements IKafkaAdminClient {
 
+    @Override
+    public List<KafkaTopicInfo> listTopics(String clusterName) {
+        try {
+//            return AdminClients.of(clusterName).listTopics().listings().get()
+//                    .stream().map(listing -> KafkaTopicInfo.builder().topicName(listing.name()).build())
+//                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /*
     // 값을 액세스 할 필요가 없다면 collect(Collectors.toList()), 필요가 있다면 map(value -> apply(value)) 이후에 collect
     @Override
     public List<KafkaTopicInfo> listTopics(String clusterName) {
         try {
+            adminClients.of(clusterName)
             return AdminClients.of(clusterName).listTopics().listings().get()
                     .stream().map(listing -> KafkaTopicInfo.builder().topicName(listing.name()).build())
                     .collect(Collectors.toList());
@@ -84,4 +100,5 @@ public class KafkaAdminClientV1 implements IKafkaAdminClient {
     public KafkaTopicConfigs readTopicConfigs(String clusterName, String topicName) {
         return null;
     }
+    */
 }

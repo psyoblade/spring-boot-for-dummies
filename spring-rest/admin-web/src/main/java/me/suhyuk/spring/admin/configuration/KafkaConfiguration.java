@@ -25,11 +25,13 @@ import java.util.stream.Collectors;
 public class KafkaConfiguration {
 
     private List<KafkaCluster> clusters;
-    private static Map<KafkaCluster, AdminClient> adminClients;
 
-    @Getter
     public static class AdminClients {
-        public static AdminClient of(String clusterName) {
+        Map<KafkaCluster, AdminClient> adminClients;
+        AdminClients(Map<KafkaCluster, AdminClient> adminClients) {
+            this.adminClients = adminClients;
+        }
+        public AdminClient of(String clusterName) {
             KafkaCluster kafkaCluster = new KafkaCluster();
             kafkaCluster.setClusterName(clusterName);
             return adminClients.get(kafkaCluster);

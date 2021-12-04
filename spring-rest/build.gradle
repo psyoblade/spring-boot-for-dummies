@@ -79,7 +79,7 @@ coveralls {
     sourceDirs = subprojects.sourceSets.main.allSource.srcDirs.flatten()
     jacocoReportPath = "${buildDir}/reports/jacoco/jacocoRootReport/jacocoRootReport.xml"
 }
-
+/*
 project(':spring-rest-server') {
     dependencies {
         implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: springBootVersion
@@ -94,7 +94,7 @@ project(':spring-rest-server') {
         testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: springBootVersion
     }
 }
-
+*/
 /*project(':admin-api') {
     dependencies {
         implementation project(':admin-common')
@@ -113,3 +113,7 @@ project(':admin-web') {
     }
 }
 */
+project(':admin-web') {
+    dependencies {
+    }
+}
