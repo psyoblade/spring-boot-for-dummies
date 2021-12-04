@@ -8,4 +8,4 @@
  */
 
 rootProject.name = 'spring-rest'
-include 'spring-rest-server'
+include 'admin-web'

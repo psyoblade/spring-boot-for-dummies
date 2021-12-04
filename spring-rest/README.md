@@ -86,4 +86,30 @@ public String toString() {
   - admin-kafka : kafka 에 의존적인 CRUD Domain (DTO, DAO) 및 Repository 구현
     - me.suhyuk.spring.admin.domain.{kafka, druid} 패키지 구성
     - 어차피 dao 를 사용할 일이 없기 때문에 dto, dao 패키지 레벨을 고려하지 않아도 될 것 같음
-  - admin-druid : druid ...
+  - 문제점은 configuration 정보는 web 단에서 application.yml 파일로 유지되어야 하는데, 외부 의존성이 있는 경우는 분리가 어려움
+    - application.yml 파일을 복제본을 유지하는 것도 조지 않으므로, web 단에서 kafka 의존성을 가져갈 수 밖에 없는 구조가 된다
+    다
+
+### 4-2-5. 파티션 및 복제 구성 변경 기능 테스트
+* [Kafka Admin Client 통한](https://kafka.apache.org/24/javadoc/org/apache/kafka/clients/admin/KafkaAdminClient.html) 통한 파티션 갯수 조정
+  - 토픽은 이름으로 구분이 가능하며, 하나의 토픽은 다수의 파티션이 있을 수 있는데 partition_id 를 통해 구분이 가능하며 제로베이스이다
+  - 하나의 브로커에 다수의 파티션 관리가 가능하지만, 복제는 브로커 당 하나씩만 가능하다
+* 카프카 토픽 파티션 관리는 증가만 가능하여 total count 지정만 가능합니다
+* 카프카 파티션을 재할당하는 문제는 생각보다 간단하지 않았고, 파티션 별로 복제수에 맞는 브로커를 할당해 주어야 합니다
+  - [Generating reassignment JSON files](https://access.redhat.com/documentation/en-us/red_hat_amq/7.4/html/using_amq_streams_on_red_hat_enterprise_linux_rhel/scaling_clusters)
+  - [Reassign Parition](https://docs.cloudera.com/documentation/enterprise/6/6.3/topics/kafka_admin_cli.html#kafka_reassign_partitions) 콘솔 도구를 보면, 토픽 이름이 'topic1' 이고, 파티션은 3개, 복제수는 2개, 전체 브로커가 3대라면 아래와 같이 설정할 수 있습니다
+```json
+{
+  "version": 1,
+  "partitions": [
+    {"topic": "topic1", "partition": 0, "replicas": [1,2], "log_dir": ["any", "any"]},
+    {"topic": "topic1", "partition": 1, "replicas": [2,3], "log_dir": ["any", "any"]},
+    {"topic": "topic1", "partition": 2, "replicas": [3,1], "log_dir": ["any", "any"]}
+  ]
+}
+```
+* 프론트에서 모든 설정을 던져주기 보다는 서버 단에서 정보를 조회하여 재구성된 모습을 반환하는 것으로 정리하면 좋을 듯
+* 파티션을 
+
+### 4-2-6. 멀티 모듈에서 스프링 문서화
+* [Spring Rest Docs 적용하기](https://jojoldu.tistory.com/294)

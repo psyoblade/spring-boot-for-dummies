@@ -2,9 +2,7 @@ package me.suhyuk.spring.boot.rest.controllers;
 
 import lombok.AllArgsConstructor;
 import me.suhyuk.spring.boot.rest.configurations.kafka.KafkaConfiguration;
-import me.suhyuk.spring.boot.rest.dto.kafka.CreateTopicRequest;
-import me.suhyuk.spring.boot.rest.dto.kafka.KafkaTopicList;
-import me.suhyuk.spring.boot.rest.dto.kafka.MyObject;
+import me.suhyuk.spring.boot.rest.dto.kafka.*;
 import me.suhyuk.spring.boot.rest.services.kafka.KafkaAdminService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -75,6 +73,17 @@ public class KafkaAdminController {
     public void createTopic(@PathVariable String clusterName,
                             @RequestBody CreateTopicRequest req) throws ExecutionException, InterruptedException {
         kafkaAdminService.createTopic(clusterName, req.getTopicName(), req.getNumPartitions(), req.getReplicationFactor());
+    }
+
+    @PutMapping("/{clusterName}/topics/{topicName}/assigns")
+    public void updateTopicAssignment(@PathVariable String clusterName, @RequestBody UpdateTopicRequest req) throws ExecutionException, InterruptedException {
+        kafkaAdminService.updateTopicAssignment(clusterName, req);
+    }
+
+    @PostMapping("/{clusterName}/topics/{topicName}/partitions")
+    public void updateTopicPartitions(@PathVariable String clusterName, @PathVariable String topicName,
+                                      @RequestBody CreatePartitionRequest req) throws ExecutionException, InterruptedException {
+        kafkaAdminService.createTopicPartition(clusterName, topicName, req);
     }
 
 }

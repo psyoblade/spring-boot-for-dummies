@@ -15,4 +15,7 @@ public interface IKafkaAdminService {
     public KafkaTopicConfigs getTopicConfigs(String clusterName, String topicName) throws ExecutionException, InterruptedException;
     // 포픽 생성 (1개) - createTopic
     public void createTopic(String clusterName, String topicName, int numPartitions, short replicationFactor) throws ExecutionException, InterruptedException;
+
+    // Topic : Create / Read (clusterId, topicName -> TopicInfo) / Delete
+    // TopicConfigs : Read / Update / Delete
 }
