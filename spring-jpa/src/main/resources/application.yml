@@ -1,7 +1,8 @@
+# standard out jpa queries
 spring:
-#  jpa: -- remove standard out jpa queries
-#    show-sql: true
-#    properties.hibernate.format_sql: true
+  jpa:
+    show-sql: true
+    properties.hibernate.format_sql: true
   h2:
     console:
       enabled: true
