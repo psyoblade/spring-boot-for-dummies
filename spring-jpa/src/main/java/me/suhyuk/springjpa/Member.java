@@ -4,36 +4,52 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "MEMBER" , uniqueConstraints = { @UniqueConstraint( columnNames = { "userName", "age" })} )
 @Entity
 public class Member {
 
     @Id
-    private Long id;
-    private String name;
+    private long id;
 
-    public Long getId() {
-        return id;
-    }
+    @Column(nullable = false)
+    private String userName;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    private int age;
 
-    public String getName() {
-        return name;
-    }
+    @Enumerated(EnumType.STRING)
+    private RoleType roleType;
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdDate;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date lastModifiedDate;
+
+    private LocalDate xCreateDate;
+    private LocalDateTime xCreateDateTime;
+
+    @Lob
+    private String description;
+
+    @Transient
+    private int foo;
 
     @Builder
-    public Member(Long id, String name) {
+    public Member(long id, String userName, RoleType roleType) {
         this.id = id;
-        this.name = name;
+        this.userName = userName;
+        this.roleType = roleType;
     }
+
+    enum RoleType {
+        USER, ADMIN
+    }
+
 }
