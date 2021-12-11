@@ -131,7 +131,7 @@ java -jar "$dir/h2-1.4.199.jar" -webAllowOthers -tcpAllowOthers -tcpPort 8043
   - 해당 섹션에 추가된 클래스는 무조건 생성될 수 있으므로 항상 주의 또 주의해야 한다
 ```xml
 <persistence-unit name="jpashop">
-  <class>me.suhyuk.springjpa.Member</class>
+  <class>me.suhyuk.springjpa.domain.Member</class>
   <properties>
   ...
   </propertis>
