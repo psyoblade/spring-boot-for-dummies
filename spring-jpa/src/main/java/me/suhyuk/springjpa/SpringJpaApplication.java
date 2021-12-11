@@ -1,5 +1,6 @@
 package me.suhyuk.springjpa;
 
+import me.suhyuk.springjpa.domain.Member;
 import me.suhyuk.springjpa.strategy.IdentityType;
 import me.suhyuk.springjpa.strategy.SequenceType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -112,6 +113,10 @@ public class SpringJpaApplication {
 			if (table.getName().equals("테이블"))
 				 throw new RuntimeException("오류 발생");
 			 */
+			em.find(Member.class, 0L);
+
+			// -- 11. 예제 실습
+
 
 			// -- flush entity manager
 			tx.commit();
