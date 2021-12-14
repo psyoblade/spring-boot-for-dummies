@@ -1,18 +1,14 @@
 package me.suhyuk.spring.admin.configuration;
 
-import jdk.nashorn.api.scripting.ScriptObjectMirror;
-import jdk.nashorn.internal.objects.annotations.Constructor;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.admin.AdminClient;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -28,7 +24,7 @@ public class KafkaConfiguration {
 
     public static class AdminClients {
         Map<KafkaCluster, AdminClient> adminClients;
-        AdminClients(Map<KafkaCluster, AdminClient> adminClients) {
+        public AdminClients(Map<KafkaCluster, AdminClient> adminClients) {
             this.adminClients = adminClients;
         }
         public AdminClient of(String clusterName) {
@@ -60,17 +56,18 @@ public class KafkaConfiguration {
     }
 
     @Bean
-    public Map<KafkaCluster, AdminClient> registerAdminClients() {
+    public AdminClients registerAdminClients() {
         Map<KafkaCluster, AdminClient> adminClients = new HashMap<>();
         for (KafkaCluster kafkaCluster : clusters) {
-            String bootstrapServers = kafkaCluster.getBootstrapServers().stream().collect(Collectors.joining(","));
+            List<String> bootstrapServers = kafkaCluster.getBootstrapServers();
+            String bootstrapServerConfig = bootstrapServers.stream().collect(Collectors.joining(","));
             Properties props = new Properties();
-            props.put(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+            props.put(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG, bootstrapServerConfig);
 
             // API 요청에는 접속이 필수이므로, 접속의 타임아웃 값은 API 요청 타임아웃 보다는 작아야 한다 - 3/6초로 축소
             props.put(CommonClientConfigs.REQUEST_TIMEOUT_MS_CONFIG, 3000); // 커넥션 생성 요청 시에 타임아웃 시간 (default: 30 seconds)
             // 애플리케이션 기동 시에 리퀘스트 타임아웃 값보다는 API 타임아웃이 크게 설정되어야 하며, Client API 호출의 타임아웃 값 설정
-            props.put(CommonClientConfigs.DEFAULT_API_TIMEOUT_MS_CONFIG, 6000); // API 호출 타임아웃 (default: 60 secs)
+//            props.put(CommonClientConfigs.DEFAULT_API_TIMEOUT_MS_CONFIG, 6000); // API 호출 타임아웃 (default: 60 secs)
 
             // 아래의 RECONNECT 정보는 접속 실패 시에 지수적으로 늘려가면서 접속을 시도하는 시간을 의미 - 접속유지를 위해서는 설정을 유지할 필요 있음
             props.put(CommonClientConfigs.RECONNECT_BACKOFF_MAX_MS_CONFIG, 1000); // 연속적인 접속 실패시에 Backoff 지수적 상승 최대 시간 (default: 1 second)
@@ -83,7 +80,7 @@ public class KafkaConfiguration {
 
             adminClients.put(kafkaCluster, AdminClient.create(props));
         }
-        return adminClients;
+        return new AdminClients(adminClients);
     }
 
 }

@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: admin-server
+
+---
+profiles: local
+server:
+  port: 30001
+kafka:
+  clusters:
+    - clusterName: kafka-test
+      clusterId: abcdefghijklmnopqrstuvwxyz
+      bootstrapServers:
+        - localhost:0

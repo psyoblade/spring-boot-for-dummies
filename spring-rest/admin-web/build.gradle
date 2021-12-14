@@ -1,9 +1,13 @@
 dependencies {
-    implementation('org.springframework.boot:spring-boot-starter-actuator')
-    implementation('org.springframework.boot:spring-boot-starter-web')
-    implementation group: 'org.apache.kafka', name: 'kafka-clients', version: kafkaClientVersion
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+//    implementation group: 'org.apache.kafka', name: 'kafka-clients', version: kafkaClientVersion
+    implementation 'org.apache.kafka:kafka-clients'
     implementation group: 'io.springfox', name: 'springfox-swagger2', version: swaggerVersion
     implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: swaggerVersion
-    annotationProcessor('org.springframework.boot:spring-boot-configuration-processor')
-    testImplementation('org.springframework.boot:spring-boot-starter-test')
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.unbroken-dome.embedded-kafka:embedded-kafka-core:1.0.0'
+    testImplementation 'org.unbroken-dome.embedded-kafka:embedded-kafka-reactor:1.0.0'
+    testImplementation 'org.unbroken-dome.embedded-kafka:embedded-kafka-spring:1.0.0'
 }

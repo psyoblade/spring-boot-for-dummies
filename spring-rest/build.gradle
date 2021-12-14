@@ -1,7 +1,7 @@
 // https://github.com/jojoldu/gradle-multi-module-coveralls/blob/master/build.gradle
 buildscript {
     ext {
-        springBootVersion = '2.1.6.RELEASE'
+        springBootVersion = '2.2.1.RELEASE'
     }
     repositories {
         mavenCentral()
@@ -14,8 +14,8 @@ buildscript {
 }
 
 ext {
-    springBootVersion = '2.1.6.RELEASE'
-    kafkaClientVersion = '2.6.3'
+    springBootVersion = '2.2.1.RELEASE'
+//    kafkaClientVersion = '2.6.3'
     lombokVersion = '1.16.20'
     jacksonVersion = '2.12.3'
     swaggerVersion = '2.9.2'
@@ -49,10 +49,10 @@ subprojects {
 
     dependencies {
         testImplementation('org.springframework.boot:spring-boot-starter-test')
-        compileOnly group: 'org.projectlombok', name: 'lombok', version: lombokVersion
-        annotationProcessor group: 'org.projectlombok', name: 'lombok', version: lombokVersion
-        testCompileOnly group: 'org.projectlombok', name: 'lombok', version: lombokVersion
-        testAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: lombokVersion
+        compileOnly('org.projectlombok:lombok')
+        annotationProcessor('org.projectlombok:lombok')
+        testCompileOnly('org.projectlombok:lombok')
+        testAnnotationProcessor('org.projectlombok:lombok')
     }
 
     jacocoTestReport {
