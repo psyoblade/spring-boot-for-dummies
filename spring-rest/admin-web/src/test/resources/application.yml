@@ -9,6 +9,6 @@ server:
 kafka:
   clusters:
     - clusterName: kafka-test
-      clusterId: abcdefghijklmnopqrstuvwxyz
+      clusterId:
       bootstrapServers:
-        - localhost:0
+        - localhost:9092
