@@ -18,7 +18,6 @@ import org.unbrokendome.embedded.kafka.junit5.EmbeddedKafkaAddress;
 
 import java.util.Collections;
 import java.util.Properties;
-import java.util.concurrent.ExecutionException;
 
 import static org.mockito.ArgumentMatchers.any;
 
@@ -27,6 +26,8 @@ public class KafkaTestSuite {
 
     public static final String CLUSTER_NAME = "kafka-test";
     public static final String TOPIC_NAME = "events";
+    private static final int numPartitions = 1;
+    private static final short replicationFactors = 1;
 
     @Autowired public KafkaConfiguration.AdminClients adminClients;
     @Autowired public IKafkaAdminClient kafkaAdminClientV1;
@@ -38,12 +39,12 @@ public class KafkaTestSuite {
     }
 
     @BeforeEach
-    void setUp(@EmbeddedKafkaAddress String bootstrapServers) throws ExecutionException, InterruptedException {
-        AdminClient adminClient = getAdminClient(bootstrapServers);
-        adminClient.createTopics(Collections.singleton(new NewTopic(TOPIC_NAME, 1, (short) 1)));
-        Mockito.lenient()
-                .when(adminClients.of(any(String.class)))
-                .thenReturn(adminClient);
+    void setUp(@EmbeddedKafkaAddress String bootstrapServers) {
+        Properties props = new Properties();
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        AdminClient adminClient = KafkaAdminClient.create(props);
+        adminClient.createTopics(Collections.singleton(new NewTopic(TOPIC_NAME, numPartitions, replicationFactors)));
+        Mockito.lenient().when(adminClients.of(any(String.class))).thenReturn(adminClient);
     }
 
     @AfterEach
@@ -53,13 +54,6 @@ public class KafkaTestSuite {
     @AfterAll
     static void tearDownAll() {
         System.out.println("######## END #########");
-    }
-
-    public AdminClient getAdminClient(String bootstrapServers) throws ExecutionException, InterruptedException {
-        Properties props = new Properties();
-        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-        AdminClient client = KafkaAdminClient.create(props);
-        return client;
     }
 
 }

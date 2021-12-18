@@ -8,11 +8,8 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.unbrokendome.embedded.kafka.junit5.EmbeddedKafka;
-import org.unbrokendome.embedded.kafka.junit5.EmbeddedKafkaAddress;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.Assert.assertEquals;
@@ -20,7 +17,6 @@ import static org.junit.Assert.assertEquals;
 @ActiveProfiles(value = "local")
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@EmbeddedKafka
 class KafkaAdminClientV1Test extends KafkaTestSuite {
 
     @Test
