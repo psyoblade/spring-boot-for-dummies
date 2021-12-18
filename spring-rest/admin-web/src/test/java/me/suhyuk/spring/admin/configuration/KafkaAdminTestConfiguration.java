@@ -1,7 +1,5 @@
 package me.suhyuk.spring.admin.configuration;
 
-import me.suhyuk.spring.admin.component.IKafkaAdminClient;
-import me.suhyuk.spring.admin.service.KafkaAdminService;
 import org.mockito.Mockito;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
