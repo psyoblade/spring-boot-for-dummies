@@ -137,3 +137,45 @@ java -jar "$dir/h2-1.4.199.jar" -webAllowOthers -tcpAllowOthers -tcpPort 8043
   </propertis>
 </persistence-unit>
 ```
+
+
+## 새롭게 알게된 사실
+
+### 자바
+* Map.put 함수의 반환값은 이전값을 반환하게 되는데 처음 입력되는 값은 없기 때문에 null 값을 반환한다
+* map 함수는 입력이 Function 이고 출력이 특정 타입인 함수를 말한다
+  - `Collection<T> = collection.map(Function<T>)`
+  - 즉, 외부에 영향을 주지도, 받지도 않기 때문에 순수한 함수적인 특성을 가지며, 함수를 전달한다는 개념만 기억하면 된다
+* forEach 경우는 일반적인 Collection 내부의 요소에 대해 특정 함수를 적용하기 위한 함수를 말한다
+  - `void = collection.forEach(o -> apply(o))`
+  - 즉, 외부함수를 사용할 수도 있고, 외부에 영향을 줄 수도 있다
+```java
+class Member {
+  List<Member> generateMembers(List<String> names) {
+    List<Member> members = new ArrayList<>();
+    names.stream().map(name -> Member.builder().name(name).build()).forEach(member -> members.add(memberRepository.save(member)));
+    return members;
+  }
+}
+```
+* repository 객체 반환 시에 isPresent 대신에 ifPresent 구문을 통해 예외를 반환할 수 있습니다
+```java
+class Repository {
+  private void validateDuplicateMember(Member member) {
+    memberRepository.findById(member.getId()).ifPresent(m -> {
+      throw new IllegalStateException(String.format("이미 존재하는 고객'%s' 입니다", m));
+    });
+  }
+}
+```
+
+
+### 인텔리제이 관련
+* 현재 선언된 구문의 변수를 자동 선언 : `Option + Command + V`
+* 인텔리제이 화면 단축키 출력 플러그인 : `Key Promoter X`, `Presentation Assistant`
+
+### 그레이들 관련
+* 그레이들 리프래시 : `Shift + Command + I`
+
+## 레퍼런스
+* [스프링부트 2.3.12 레퍼런스](https://docs.spring.io/spring-boot/docs/2.3.12.RELEASE/reference/html)

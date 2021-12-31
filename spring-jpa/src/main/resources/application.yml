@@ -7,7 +7,7 @@ spring:
     console:
       enabled: true
 
-# out jpa queries via logging
+# out jpa queries via logging - ERROR, WARN, INFO, DEBUG, TRACE
 logging.level.org.hibernate:
-  SQL: DEBUG
-  type.descriptor.sql.BasicBinder: TRACE
+  SQL: INFO
+  type.descriptor.sql.BasicBinder: INFO

@@ -12,4 +12,9 @@ public class HelloController {
         model.addAttribute("email", "psyoblade@naver.com");
         return "hello";
     }
+
+    @GetMapping("foo")
+    public String foo(Model model) {
+        return "foo/bar";
+    }
 }
