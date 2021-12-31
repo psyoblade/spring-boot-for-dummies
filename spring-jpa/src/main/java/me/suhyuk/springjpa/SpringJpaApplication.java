@@ -3,6 +3,7 @@ package me.suhyuk.springjpa;
 import me.suhyuk.springjpa.domain.Member;
 import me.suhyuk.springjpa.strategy.IdentityType;
 import me.suhyuk.springjpa.strategy.SequenceType;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import me.suhyuk.springjpa.strategy.TableType;
 
@@ -117,9 +118,9 @@ public class SpringJpaApplication {
 
 			// -- 11. 예제 실습
 
-
 			// -- flush entity manager
 			tx.commit();
+
 		} catch (Exception e) {
 			tx.rollback();
 		} finally {
