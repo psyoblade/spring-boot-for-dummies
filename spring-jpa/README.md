@@ -99,7 +99,7 @@ public class Account implements Serializable {  // Composite 키를 사용하는
   - 저장할 필드에 final 사용 금지
 * 애플리케이션 실행 시점의 DDL
   - **로컬 장비에서만 사용할 것** - `<property name="hibernate.hbm2ddl.auto" value="create" />`
-    - create : drop & lcreate
+    - create : drop & create
     - create-drop : drop & create & drop
     - update : alter add column
     - validate : check diff columns
@@ -131,7 +131,7 @@ java -jar "$dir/h2-1.4.199.jar" -webAllowOthers -tcpAllowOthers -tcpPort 8043
   - 해당 섹션에 추가된 클래스는 무조건 생성될 수 있으므로 항상 주의 또 주의해야 한다
 ```xml
 <persistence-unit name="jpashop">
-  <class>me.suhyuk.springjpa.domain.Member</class>
+  <class>Member</class>
   <properties>
   ...
   </propertis>
@@ -141,7 +141,80 @@ java -jar "$dir/h2-1.4.199.jar" -webAllowOthers -tcpAllowOthers -tcpPort 8043
 
 ## 새롭게 알게된 사실
 
-### 자바
+### 1. 3가지 스프링 웹 개발 방식
+#### 1.1 정적인 콘텐트를 반환
+* 페이지 이름이 그대로 요청되는 경우는 static/<name>.html 이 있어서 Tomcat 이 직접 반환합니다
+#### 1.2 동적인 콘텐트를 반환
+* 반환값이 String 인 Controller 방식이며, viewResolver 가 Template 페이지(template/<name>.html)를 렌더링을 하여 반환합니다
+#### 1.3 API 통하여 객체를 반환
+* @ResponseBody 어노테이션이 반드시 필요하며, Http Body 에 직접 문자를 반환합니다
+  - 기본 문자 (String)처리는 StringHttpMessageConvert 통하여 반환
+  - 기본 객체 (Object)처리는 MappingJackson2HttpMessageConverter 통한 방식
+* 기본은 Json 문서를 반환하지만, Request Header 의 Accept, Controller 의 Response Type 조합으로 결정됩니다
+
+### 2. 스프링 의존성 주입방식
+> 의존성 주입 (DI: Dependency Injection) : 생성자를 통하여 외부 의존성을 받을 수 있도록 인자에 추가되는 것을 말합니다
+* @Autowired Bean 객체 : 스프링 프레임워크가 관리하는 객체, 즉 관리 대상 객체 - 다른 표현으로 @Component 라고 말합니다
+* 어딘가에 생성자를 통해서 해당 Bean 객체를 생성할 수 있도록 환경이 제공되어야만 합니다 (@Controller, @Service, @Repository 등)
+
+#### 2.1 ComponentScan
+* @Component 종류의 어노테이션을 통해서 스프링이 자동으로 주입해주는 방식
+  - @SpringBootApplication 패키지 하위에 존재하는 @Component 만 자동으로 Scan 됩니다
+  - 빈 객체 등록시에 반드시 1개의 객체만 관리되는 Singleton 방식으로만 등록됩니다
+  - *단점은 해당 컴포넌트 변경 수정 시에 여러군데 수정이 필요할 수 있다*
+```java
+@Service
+class FooService { void bar() { /* ... */ } }
+
+class UnitTest {
+    @Autowired FooService fooService;
+    @Test void test() { fooService.bar(); }
+}
+```
+#### 2.2 Configuration
+* @Configuration 종류의 어노테이션을 통해서 사용자 클래스를 @Bean 어노테이션을 통해서 주입하는 방식
+  - *개별 구성을 해야 하는 불편함이 있지만, Concrete Class 변경이나 의존성이 변경되는 경우 한 군데만 바꾸면 된다*
+```java
+@Configuration
+class MyConfig {
+  @Bean
+  public FooService fooService() {
+      return new FooService(barRepository());
+  }
+  @Bean
+  public BarRepository barRepository() {
+      return new BarRepository();
+  }
+}
+```
+### 2.3 주입방식 3가지 (Constructor, Member Variable, Setter)
+* Constructor : 가장 추천되는 방식으로 생성시점에 한 번만 호출되는 방식
+* Member or Setter : 이 두가지 방식은 외부 노출 및 변경에 위험할 수 있어 추천되지 않습니다
+
+
+### 3. 패키지 별 설계 방식
+#### 3.1 Repository 패키지
+* 레포지토리 객체는 기계적인 용어 CRUD (save, findById, findAll 등)을 사용하는 것이 좋고,
+#### 3.2 Service 패키지
+* 서비스 객체는 비지니스 적인 용어 (join, findMember) 등과 같이 업무에 관련된 도메인을 사용합니다
+#### 3.3 스프링을 사용하는 이유
+> `확장에는 열려있고, 수정, 변경에는 닫혀있다` 인터페이스를 통한 구현을 지향하여 데이터베이스 변경 시에도 수정 범위를 최소화 할 수 있다
+```java
+@Configuration
+class CustomConfiguration {
+  @Autowired DataSource dataSource;  
+  @Bean
+  public UserRepository userRepository() {
+    // return new MemoryUserRepository();      // 이전 구현
+    return new JdbcUserRepository(dataSource); // 신규 구현
+  }
+}
+```
+#### 3.4 단위테스트 내부에서 Transactional
+> @Transactional 사용시에 단위 테스트 내에서는 모두 rollback 되므로, 테스트 시에 삭제가 필요없습니다
+
+
+### 4. 자바
 * Map.put 함수의 반환값은 이전값을 반환하게 되는데 처음 입력되는 값은 없기 때문에 null 값을 반환한다
 * map 함수는 입력이 Function 이고 출력이 특정 타입인 함수를 말한다
   - `Collection<T> = collection.map(Function<T>)`
@@ -169,13 +242,15 @@ class Repository {
 }
 ```
 
-
-### 인텔리제이 관련
-* 현재 선언된 구문의 변수를 자동 선언 : `Option + Command + V`
+### 5. 인텔리제이 관련
+* 구문변수를 자동 선언 : `Option + Command + V`
+* 인덴테이션 자동 정리 : `Option + Command + L`
+* 애매한 경우 알아서 자동완성 : `Shift + Command + Enter`
+* 리팩토링 컨텍스트 메뉴 출력 : `Ctrl + T` or `Shift + Ctrl + T`
 * 인텔리제이 화면 단축키 출력 플러그인 : `Key Promoter X`, `Presentation Assistant`
 
-### 그레이들 관련
+### 6. 그레이들 관련
 * 그레이들 리프래시 : `Shift + Command + I`
 
-## 레퍼런스
+## 7. 레퍼런스
 * [스프링부트 2.3.12 레퍼런스](https://docs.spring.io/spring-boot/docs/2.3.12.RELEASE/reference/html)
