@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    url: jdbc:h2:tcp://localhost:8043/~/git/psyoblade/inflearn-spring-jpa/h2/jpademo
+    driver-class-name: org.h2.Driver
+    username: sa
+  h2:
+    console:
+      enabled: true
