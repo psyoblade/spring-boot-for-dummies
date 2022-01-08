@@ -1,43 +1,53 @@
 # Spring Boot Web Application 개발
 
-
-## JPA 영속성 컨텍스트의 이해
+## I. JPA 영속성 컨텍스트의 이해
 > **Persistence Context** : "엔티티를 영구 저장하는 환경"
 > `EntityManager.persist(entity)` 는 persist 메소드는 영속성 컨텍스트에 저장한다는 의미입니다 
 > 애플리케이션(Object)과 데이터베이스(Database) 사이에서 캐싱 혹은 다른 계층간의 변환을 수행
+> JPA 는 interface, 실제 구현은 Hibernate, OpenJPA, EclipseLink 등이 있으며 Spring 은 Hibernate 를 사용합니다 
+> ORM 기술의 구현체이며, Object Relational Mapping 즉, 자바 객체를 관계형 데이터베이스로 맵핑해 주는 기술을 말합니다.
+> 또한, 인터페이스 이름만으로도 쿼리를 동적으로 만들어내는 것이 가능합니다
+```java
+interface MemberRepository {
+  // select m from Member m where m.name = ?
+  Optional<Member> findByName(String memberName);
+}
+```
 
-* EntityManager 에 1:1 로 하나의 컨텍스트 객체를 관리 운영되며, 생명주기를 가진다
+### 1. EntityManager 에 1:1 로 하나의 컨텍스트 객체를 관리 운영되며, 생명주기를 가진다
   - 비영속 : Entity 객체를 생성만 하여 JPA 와 무관한 상태
   - 영속 : EntityManager 에 persist 호출 이후에 영속 상태로 빠짐
   - 준영속 : detach 메소드를 통해서 제거한 상태 
   - 삭제 : remove 통해서 영구 삭제하는 상태
 
-* Persistence Context 1 Level Cache
+### 2. Persistence Context 1 Level Cache
   - persist 호출 시에 1차 캐시에 저장되어 있고, 이를 다시 가져오는 경우 1차 캐시를 반환한다
   - 다만, 1차 캐시에 없는 경우 데이터베이스에 조회하고, 1차 캐시에 저장하고 결과를 반환한다
   - 트랜잭션 내에서만 동작하는 캐시이므로, 동일한 데이터베이스 조회를 줄이는 효과가 있다고 볼 수 있다
   - Repeatable Read 를 Application 수준에서 제공
 
-* "쓰기 지연 SQL 저장소" 동작
+### 3. "쓰기 지연 SQL 저장소" 동작
   - commit 메소드 호출 전의 모든 persist 동작은 1차 캐시를 거쳐, "쓰기 지연 저장소"에 저장됩니다
   - flush 과정에서 일괄 commit 됩니다 ` <property name="hibernate.jdbc.batch_size" value="10"/>` 설정으로 조정이 됩니다
 
-* "변경 감지" 동작
+### 4. "변경 감지" 동작
   - 컨텍스트 내의 엔티티의 경우 변경된 경우 감지하여 commit 시에 상태를 저장합니다
   - 동일한 값으로 변경하는 경우에도 변경되지 않았기 때문에 수정되지 않습니다
   - 컨텍스트 내에서는 아무리 변경되어도 최종적으로 커밋 직전 상태가 이전과 같다면 변경되지 않습니다
   
-* 영속성 컨텍스트 플러시 하는 방법
+### 5. 영속성 컨텍스트 플러시 하는 방법
   - entityManager.flush()
   - transaction.commit()
   - JPQL 쿼리 (실행 시에는 강제로 flush 호출)
 
-* 준영속 상태로 만드는 방법
+### 6. 준영속 상태로 만드는 방법
   - entityManager.detach(member)
   - entityManager.clear()
   - entityManager.close()
 
-## Entity Mapping 이해
+
+
+## II. Entity Mapping 이해
 
 * 객체와 테이블 : @Entity, @Table
 * 필드와 컬럼 : @Column
@@ -114,7 +124,7 @@ public class Account implements Serializable {  // Composite 키를 사용하는
   - Table : persist 호출 시에 table 조회가 일어나며, 트랜잭션 내이지만, 실제 테이블 값이 변경되어 외부영향이 있음
 
 
-## 시행착오
+## III. 시행착오
 * [Spring Boot Documentation](https://spring.io/projects/spring-boot#learn)
 * [H2 Database Engine](https://www.h2database.com/html/main.html)
   - Embedded mode : jdbc:h2:~/Datasets/h2/jpashop
@@ -139,7 +149,7 @@ java -jar "$dir/h2-1.4.199.jar" -webAllowOthers -tcpAllowOthers -tcpPort 8043
 ```
 
 
-## 새롭게 알게된 사실
+## IV. 새롭게 알게된 사실
 
 ### 1. 3가지 스프링 웹 개발 방식
 #### 1.1 정적인 콘텐트를 반환
@@ -215,6 +225,8 @@ class CustomConfiguration {
 
 
 ### 4. 자바
+
+#### 4.1 자바 기본
 * Map.put 함수의 반환값은 이전값을 반환하게 되는데 처음 입력되는 값은 없기 때문에 null 값을 반환한다
 * map 함수는 입력이 Function 이고 출력이 특정 타입인 함수를 말한다
   - `Collection<T> = collection.map(Function<T>)`
@@ -242,15 +254,19 @@ class Repository {
 }
 ```
 
-### 5. 인텔리제이 관련
+#### 4.2 테스트 케이스의 중요성
+> 개발의 60~70%를 테스트 코드 작성에 투입되고 있는가?
+
+### 6. 인텔리제이 관련
 * 구문변수를 자동 선언 : `Option + Command + V`
 * 인덴테이션 자동 정리 : `Option + Command + L`
+* 한라인으로 자동 정리 : `Option + Command + N`
 * 애매한 경우 알아서 자동완성 : `Shift + Command + Enter`
 * 리팩토링 컨텍스트 메뉴 출력 : `Ctrl + T` or `Shift + Ctrl + T`
 * 인텔리제이 화면 단축키 출력 플러그인 : `Key Promoter X`, `Presentation Assistant`
 
-### 6. 그레이들 관련
+### 7. 그레이들 관련
 * 그레이들 리프래시 : `Shift + Command + I`
 
-## 7. 레퍼런스
+## V. 레퍼런스
 * [스프링부트 2.3.12 레퍼런스](https://docs.spring.io/spring-boot/docs/2.3.12.RELEASE/reference/html)
