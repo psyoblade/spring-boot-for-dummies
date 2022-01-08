@@ -1,0 +1,34 @@
+---
+# standard out jpa queries
+spring:
+  profiles: test-jpa
+  jpa:
+    show-sql: true
+    properties.hibernate.format_sql: true
+  h2:
+    console:
+      enabled: true
+
+# out jpa queries via logging - ERROR, WARN, INFO, DEBUG, TRACE
+logging.level.org.hibernate:
+  SQL: INFO
+  type.descriptor.sql.BasicBinder: INFO
+
+---
+# standard out jpa queries
+spring:
+  profiles: test-web
+  datasource:
+    url: jdbc:h2:tcp://localhost:8043/~/git/psyoblade/inflearn-spring-jpa/h2/jpademo
+    driver-class-name: org.h2.Driver
+  h2:
+    console:
+      enabled: true
+  jpa:
+    show-sql: true
+    hibernate.ddl-auto: none
+
+# out jpa queries via logging - ERROR, WARN, INFO, DEBUG, TRACE
+logging.level.org.hibernate:
+  SQL: INFO
+  type.descriptor.sql.BasicBinder: INFO
