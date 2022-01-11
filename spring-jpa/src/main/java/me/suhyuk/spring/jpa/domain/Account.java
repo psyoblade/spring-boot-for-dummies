@@ -1,4 +1,4 @@
-package me.suhyuk.spring.jpa;
+package me.suhyuk.spring.jpa.domain;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

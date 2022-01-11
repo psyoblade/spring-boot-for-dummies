@@ -6,11 +6,12 @@ import lombok.Setter;
 import javax.persistence.*;
 
 @Entity
+@Table(name = "ITEM")
 @Getter
 @Setter
 public class Item {
     @Id @GeneratedValue
-    @Column(name = "item_id")
+    @Column(name = "ITEM_ID")
     private Long id;
 
     private String name;
