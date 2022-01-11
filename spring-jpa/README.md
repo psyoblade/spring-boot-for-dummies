@@ -130,6 +130,8 @@ public class Account implements Serializable {  // Composite 키를 사용하는
 
 
 ## III. 연관관계 매핑
+> 이전 장에서 관계형 데이터베이스 기준으로 설계를 하는 경우 Id 값만 가지는 N개 테이블인 OrderItem 테이블 사용시에 객체스러운 접근이 불가능한 상황이 발생하기 때문에 이를 연관관계 맵핑을 통해 해결하고자 합니다
+
 ## IV. 프록시와 연관관계 관리
 ## V. 값 타입
 ## VI. 객체지향 쿼리 언어
