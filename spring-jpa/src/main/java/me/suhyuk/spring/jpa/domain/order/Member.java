@@ -7,12 +7,14 @@ import java.util.Objects;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@Table(name = "MEMBER")
 @Getter
+@Setter
 @ToString
 public class Member {
 
     @Id @GeneratedValue()
-    @Column(name = "member_id")
+    @Column(name = "MEMBER_ID")
     private Long id;
     private String name;
     private String city;

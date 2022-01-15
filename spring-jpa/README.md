@@ -1,5 +1,13 @@
 # Spring Boot Web Application 개발
 
+* I. JPA 영속성 컨텍스트의 이해
+* II. Entity Mapping 이해
+* III. 연관관계 매핑
+* IV. 프록시와 연관관계 관리
+* V. 값 타입
+* VI. 객체지향 쿼리 언어
+
+
 ## I. JPA 영속성 컨텍스트의 이해
 > **Persistence Context** : "엔티티를 영구 저장하는 환경"
 > `EntityManager.persist(entity)` 는 persist 메소드는 영속성 컨텍스트에 저장한다는 의미입니다 
@@ -46,7 +54,6 @@ interface MemberRepository {
   - entityManager.close()
 
 
-
 ## II. Entity Mapping 이해
 
 * 객체와 테이블 : @Entity, @Table
@@ -56,12 +63,10 @@ interface MemberRepository {
 
 ```java
 import com.sun.istack.internal.NotNull;
-
 import javax.annotation.Generated;
 import java.io.Serializable;
 
-
-@Entity
+@Entity(name = "Account")
 @Table(name = "ACCOUNT")
 @NoArgsConstructor
 @Getter
@@ -124,7 +129,14 @@ public class Account implements Serializable {  // Composite 키를 사용하는
   - Table : persist 호출 시에 table 조회가 일어나며, 트랜잭션 내이지만, 실제 테이블 값이 변경되어 외부영향이 있음
 
 
-## III. 시행착오
+## III. 연관관계 매핑
+> 이전 장에서 관계형 데이터베이스 기준으로 설계를 하는 경우 Id 값만 가지는 N개 테이블인 OrderItem 테이블 사용시에 객체스러운 접근이 불가능한 상황이 발생하기 때문에 이를 연관관계 맵핑을 통해 해결하고자 합니다
+
+## IV. 프록시와 연관관계 관리
+## V. 값 타입
+## VI. 객체지향 쿼리 언어
+
+## VII. 시행착오
 * [Spring Boot Documentation](https://spring.io/projects/spring-boot#learn)
 * [H2 Database Engine](https://www.h2database.com/html/main.html)
   - Embedded mode : jdbc:h2:~/Datasets/h2/jpashop
@@ -149,7 +161,7 @@ java -jar "$dir/h2-1.4.199.jar" -webAllowOthers -tcpAllowOthers -tcpPort 8043
 ```
 
 
-## IV. 새롭게 알게된 사실
+## VIII. 새롭게 알게된 사실
 
 ### 1. 3가지 스프링 웹 개발 방식
 #### 1.1 정적인 콘텐트를 반환
@@ -257,7 +269,7 @@ class Repository {
 #### 4.2 테스트 케이스의 중요성
 > 개발의 60~70%를 테스트 코드 작성에 투입되고 있는가?
 
-### 6. 인텔리제이 관련
+### 5. 인텔리제이 관련
 * 구문변수를 자동 선언 : `Option + Command + V`
 * 인덴테이션 자동 정리 : `Option + Command + L`
 * 한라인으로 자동 정리 : `Option + Command + N`
@@ -265,8 +277,9 @@ class Repository {
 * 리팩토링 컨텍스트 메뉴 출력 : `Ctrl + T` or `Shift + Ctrl + T`
 * 인텔리제이 화면 단축키 출력 플러그인 : `Key Promoter X`, `Presentation Assistant`
 
-### 7. 그레이들 관련
+### 6. 그레이들 관련
 * 그레이들 리프래시 : `Shift + Command + I`
 
-## V. 레퍼런스
+
+## IX. 레퍼런스
 * [스프링부트 2.3.12 레퍼런스](https://docs.spring.io/spring-boot/docs/2.3.12.RELEASE/reference/html)

@@ -1,15 +1,14 @@
 package me.suhyuk.spring.jpa;
 
-import me.suhyuk.spring.jpa.domain.Member;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
 import javax.persistence.*;
 
 @SpringBootApplication
 public class SpringJpaApplication {
 
 	public static void main(String[] args) {
-		EntityManagerFactory emf = Persistence.createEntityManagerFactory("jpashop");
+		// 여기서는 직접 EntityManager 를 사용하기 때문에 반드시 resources/META-INF/persistence.xml 파일을 써야만 한다
+		EntityManagerFactory emf = Persistence.createEntityManagerFactory("jpademo");
 		EntityManager em = emf.createEntityManager();
 		EntityTransaction tx = em.getTransaction();
 		tx.begin();
@@ -110,9 +109,6 @@ public class SpringJpaApplication {
 			if (table.getName().equals("테이블"))
 				 throw new RuntimeException("오류 발생");
 			 */
-			em.find(Member.class, 0L);
-
-			// -- 11. 예제 실습
 
 			// -- flush entity manager
 			tx.commit();

@@ -2,23 +2,24 @@
 <persistence version="2.2"
              xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd">
-    <persistence-unit name="jpashop">
+    <persistence-unit name="jpademo">
         <!--class>Account</class>
         <class>Member</class>
         <class>User</class>
         <class>IdentityType</class>
         <class>SequenceType</class>
         <class>TableType</class-->
-        <class>me.suhyuk.spring.jpa.domain.Item</class>
         <class>me.suhyuk.spring.jpa.domain.Member</class>
         <class>me.suhyuk.spring.jpa.domain.Order</class>
         <class>me.suhyuk.spring.jpa.domain.OrderItem</class>
+        <class>me.suhyuk.spring.jpa.domain.Item</class>
+        <class>me.suhyuk.spring.jpa.domain.Foo</class>
         <properties>
             <!-- 필수 속성 -->
             <property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>
             <property name="javax.persistence.jdbc.user" value="sa"/>
             <property name="javax.persistence.jdbc.password" value=""/>
-            <property name="javax.persistence.jdbc.url" value="jdbc:h2:tcp://localhost:8043/~/jpashop"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:h2:tcp://localhost:8043/~/git/psyoblade/inflearn-spring-jpa/h2/jpademo"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
             <!-- 옵션 -->
             <property name="hibernate.show_sql" value="true"/>
