@@ -1,4 +1,4 @@
-package me.suhyuk.spring.jpa.domain;
+package me.suhyuk.spring.jpa.domain.foo;
 
 import javax.persistence.*;
 import java.math.BigDecimal;

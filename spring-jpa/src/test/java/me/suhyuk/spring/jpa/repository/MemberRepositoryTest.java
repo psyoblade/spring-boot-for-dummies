@@ -1,6 +1,6 @@
 package me.suhyuk.spring.jpa.repository;
 
-import me.suhyuk.spring.jpa.domain.Member;
+import me.suhyuk.spring.jpa.domain.order.Member;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

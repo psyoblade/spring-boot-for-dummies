@@ -2,7 +2,7 @@ package me.suhyuk.spring.jpa.service;
 
 import me.suhyuk.spring.jpa.MemberRepositorySuite;
 import me.suhyuk.spring.jpa.SpringJpaApplicationTest;
-import me.suhyuk.spring.jpa.domain.Member;
+import me.suhyuk.spring.jpa.domain.order.Member;
 import me.suhyuk.spring.jpa.repository.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
