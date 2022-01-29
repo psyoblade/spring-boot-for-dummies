@@ -1,5 +1,6 @@
 package me.suhyuk.spring.jpa;
 
+import me.suhyuk.spring.jpa.domain.order.*;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import javax.persistence.*;
 
@@ -109,6 +110,81 @@ public class SpringJpaApplication {
 			if (table.getName().equals("테이블"))
 				 throw new RuntimeException("오류 발생");
 			 */
+
+			/** // -- 11. 단방향 연관관계
+
+			Team team = new Team();
+			team.setName("엔씨다이노스");
+			em.persist(team);
+
+			Player player = new Player();
+			player.setName("박수혁");
+			player.setTeamId(team.getId());
+			em.persist(player);
+
+			Player foundPlayer = em.find(Player.class, player.getId());
+			System.out.println("foundPlayer = " + foundPlayer);
+			 */
+
+			/** // 11-1. 단방향 연관관계를 ManyToOne 관계로 구성
+			Team team = new Team();
+			team.setName("엔씨다이노스");
+			em.persist(team);
+
+			Player player = new Player();
+			player.setName("박수혁");
+			player.setTeam(team);
+			em.persist(player);
+
+			em.flush();
+			em.clear();
+
+			Player foundPlayer = em.find(Player.class, player.getId());
+			System.out.println("foundPlayer = " + foundPlayer);
+
+			Team foundTeam = em.find(Team.class, team.getId());
+			foundTeam.getPlayers().stream().forEachOrdered(System.out::println);
+			 */
+
+			/** // -- 11.2 양방향 연관관계에서 안전하게 구현하기
+			Team team = Team.builder().name("엔씨다이노스").build();
+			em.persist(team);
+
+			Player player = Player.builder().name("박수혁").build();
+			player.changeTeam(team);
+			em.persist(player);
+
+			Player foundPlayer = em.find(Player.class, player.getId());
+			System.out.println("foundPlayer = " + foundPlayer);
+
+			Team foundTeam = em.find(Team.class, team.getId());
+			foundTeam.getPlayers().stream().forEachOrdered(System.out::println);
+			 */
+
+			// -- 12. 주문 예제에서 단방향 연관관계를 통하여 구현해보자
+			Item dosirak = Item.builder().name("도시락").price(100).build();
+			em.persist(dosirak);
+			Item sinRamen = Item.builder().name("신라면").price(200).build();
+			em.persist(sinRamen);
+			Item jinRamen = Item.builder().name("진라면").price(150).build();
+			em.persist(jinRamen);
+
+			Member member = Member.builder().name("박수혁").build();
+			em.persist(member);
+
+			OrderItem orderItem1 = OrderItem.builder().item(dosirak).count(5).build();
+			em.persist(orderItem1);
+			OrderItem orderItem2 = OrderItem.builder().item(sinRamen).count(10).build();
+			em.persist(orderItem2);
+			OrderItem orderItem3 = OrderItem.builder().item(jinRamen).count(10).build();
+			em.persist(orderItem3);
+
+			Order order = Order.builder().orderStatus(OrderStatus.ORDER).build();
+			order.addOrderItem(orderItem1);
+			order.addOrderItem(orderItem2);
+			order.addOrderItem(orderItem3);
+			member.doOrder(order);
+			em.persist(order);
 
 			// -- flush entity manager
 			tx.commit();

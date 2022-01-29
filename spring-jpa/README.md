@@ -131,6 +131,214 @@ public class Account implements Serializable {  // Composite 키를 사용하는
 
 ## III. 연관관계 매핑
 > 이전 장에서 관계형 데이터베이스 기준으로 설계를 하는 경우 Id 값만 가지는 N개 테이블인 OrderItem 테이블 사용시에 객체스러운 접근이 불가능한 상황이 발생하기 때문에 이를 연관관계 맵핑을 통해 해결하고자 합니다
+> 객체의 참조와 테이블의 외래 키를 매핑합니다. 즉, **객체가 메모리 상에서는 레퍼런스로 관리되어야 하지만, 테이블은 외래키를 통해서 별도의 테이블로 유지**되어야 하는 것이 핵심입니다
+
+* 테이블은 외래키를 통해 가져오지만, 객체는 레퍼런스를 통해 가져오기 때문에 객체지향 스럽게 모델링을 하는 경우에 어떻게 구현을 해야 하는가?
+
+### 1. 단순 연관관계 매핑
+
+#### 1.1 @ManyToOne + @JoinColumn 어노테이션을 통해 연결만 해줘도 연관관계 매핑이 가능
+```java
+public class Player {
+  @Id @GeneratedValue
+  @Column(name = "PLAYER_ID", nullable = false)
+  private Long id;
+  @JoinColumn(name = "TEAM_ID")
+  @ManyToOne
+  private Team team;
+  @Column(name = "PLAYER_NAME")
+  private String name;
+  public Player() {
+  }
+}
+
+public class Team {
+  @Id
+  @GeneratedValue
+  @Column(name = "TEAM_ID", nullable = false)
+  private Long id;
+  @Column(name = "TEAM_NAME")
+  private String name;
+  public Team() {
+  }
+}
+```
+
+### 2. 양방향 연관관계와 연관관계의 주인 1- 기본
+> 관계형 데이터베이스에서는 FK로 연결되므로 양쪽은 편하게 가져올 수 있으나, 객체에서는 별도의 조치가 필요하다 (mappedBy 구문이 필요함)
+
+* 객체는 단방향 관계를 각각 생성해 주어야하지만, 테이블의 연관관계는 FK 1개로 해결된다
+  - 즉, 멤버가 팀의 레퍼런스를 변경할 수도 있고, 팀의 멤버를 제거할 수도 있기 때문에 어느 쪽이 FK 관계를 맵핑하고 있어야 하는지를 하나로 정해야 하고 이것이 연관관계의 주인(Owner)으로 지정해야만 한다
+  - 그리고 연관관계의 주인만 읽고, 쓸수 있으며, Owner 가 아닌 경우에는 mappedBy 속성으로 지정해야 합니다
+  - 일반적으로 외래키가 존재하는 클래스가 Owner 로 유지하는 것이 좋다
+
+* 유의할 사항
+  - 양방향 관계의 경우 ToString 이 서로 참조하고 있어 출력시에 무한루프에 빠지게 되어 OneToMany 테이블에만 관계객체를 포함하여야 합니다
+  - 관계생성 시에 참조를 하기위한 Id 값이 생성되고 난 이후(팀이 있어야 멤버가 생성될 수 있다)에 정상적으로 저장됩니다
+  - 즉, flush, clear 하지 않는다면 1차캐시의 객체를 그대로 가져오기 때문에 문제가 될 수 있고 단위 테스트에서도 문제가 됩니다
+  - 안전한 방법은 양쪽 모두 레퍼런스를 넣어주는 것이 가장 좋습니다 (해서 양쪽에서 수정하지 않고, 멤버 추가시에 멤버객체를 같이 추가해줍니다)
+    - Setter 메소드 대신 명령을 포함하는 메소드로 구현합니다 `setTeam` 대신 `changeTeam` 등으로 변경합니다
+    - Owner 에 "편의 메소드"를 작성하든지, Mapped 쪽에 작성하든지 한 쪽에서만 작성하라
+
+* 처음 설계 시에는 절대 양방향 매핑을 사용하지 않습니다
+  - 아무리 복잡해도 단방향으로만 초기 설계와 구현을 하는 것이 좋습니다. 
+  - 기본적으로 단방향만으로도 구현이 가능하고, 양방향 조회는 필요시에만 합니다 (편의 메소드 등 고민거리만 많아집니다)
+
+* 아래와 같이 `Setter` 를 제거하고, Builder 와 changeTeam 함수를 통해 깔끔하게 정리되었습니다
+```java
+@NoArgsConstructor
+public class Player {
+  @Id @GeneratedValue
+  @Column(name = "PLAYER_ID", nullable = false)
+  private Long id;
+  @JoinColumn(name = "TEAM_ID")
+  @ManyToOne
+  private Team team;
+  @Column(name = "PLAYER_NAME")
+  private String name;
+  @Builder
+  public Player(String name) {
+    this.name = name;
+  }
+  public void changeTeam(Team team) {
+    this.team = team;
+    this.team.getPlayers().add(this);
+  }
+  @Override
+  public String toString() {
+    return "Player{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            '}';
+  }
+}
+// main-class
+public class SpringJpaApplication {
+  public static void main(String[] args) {
+    Team team = Team.builder().name("엔씨다이노스").build();
+    em.persist(team);
+
+    Player player = Player.builder().name("박수혁").build();
+    player.changeTeam(team);
+    em.persist(player);
+  }
+}
+```
+
+* 이번에는 주문예제를 통해서 연관관계 매핑을 실습해보겠습니다
+  - 여기서 중요한 부분은 자연스러운 스토리를 만드는 것으로 판단되며, 여러개의 주문 아이템을 하나의 주문에 추가할 수 있어야 합니다
+  - 또한 양방향 관계를 만들어줄 필요가 있기 때문에 "편의 메소드" `Order.addOrderItem` 과 `OrderItem.registerOrder` 메소드를 구현합니다
+```java
+public class Order {
+
+  @Id @GeneratedValue
+  @Column(name = "ORDER_ID")
+  private Long id;
+
+  @ManyToOne
+  @JoinColumn(name = "MEMBER_ID")
+  private Member member;
+
+  @Column(name = "ORDER_DATE")
+  private LocalDateTime orderDate;
+
+  @Enumerated(EnumType.STRING)
+  private OrderStatus orderStatus;
+
+  @OneToMany(mappedBy = "order")
+  private List<OrderItem> orderItems = new ArrayList<>();
+
+  public void selectMember(Member member) {
+    this.member = member;
+  }
+
+  public void addOrderItem(OrderItem orderItem) {
+    orderItem.registerOrder(this);
+    this.orderItems.add(orderItem);
+  }
+
+  @Builder
+  public Order(OrderStatus orderStatus) {
+    this.orderDate = LocalDateTime.now();
+    this.orderStatus = orderStatus;
+  }
+}
+
+// main-class
+public class SpringJpaApplication {
+  public static void main(String[] args) {
+    Item dosirak = Item.builder().name("도시락").price(100).build();
+    em.persist(dosirak);
+    Item sinRamen = Item.builder().name("신라면").price(200).build();
+    em.persist(sinRamen);
+    Item jinRamen = Item.builder().name("진라면").price(150).build();
+    em.persist(jinRamen);
+
+    Member member = Member.builder().name("박수혁").build();
+    em.persist(member);
+
+    OrderItem orderItem1 = OrderItem.builder().item(dosirak).count(5).build();
+    em.persist(orderItem1);
+    OrderItem orderItem2 = OrderItem.builder().item(sinRamen).count(10).build();
+    em.persist(orderItem2);
+    OrderItem orderItem3 = OrderItem.builder().item(jinRamen).count(10).build();
+    em.persist(orderItem3);
+
+    Order order = Order.builder().orderStatus(OrderStatus.ORDER).build();
+    order.addOrderItem(orderItem1);
+    order.addOrderItem(orderItem2);
+    order.addOrderItem(orderItem3);
+    member.doOrder(order);
+    em.persist(order);
+  }
+}
+```
+* 아래의 질의문으로 전체 데이터를 조회할 수 있습니다
+```bash
+SELECT oi.*, o.*, i.* FROM ORDER_ITEM oi
+INNER JOIN ORDERS o on oi.order_id = o.order_id
+INNER JOIN ITEM i on oi.item_id = i.item_id;
+```
+
+### 3. 양방향 연관관계와 연관관계의 주인 2- 주의점, 정리
+
+### 4. 다양한 연관관계 매핑
+* N:1
+* 1:N
+* 1:1
+* N:M
+
+### 5. 고급 매핑
+
+#### 5-1. 상속 전략 (Inheritance strategy)
+> 관계적으로 필요하며, 추상화된 상위 테이블을 가지는 경우, 최상위 테이블을 추상 클래스로 생성합니다
+
+* SINGLE_TABLE : 하나의 테이블에 모든 컬럼을 다 넣는 방법 (MongoDB style - default style)
+  - Default 전략이며, discriminator column 이 자동으로 들어갑니다
+  - 하나의 테이블이라 운영 및 조회 성능상 이점이 있다 <-> 다른 컬럼에 대해 Null 허용, 테이블 크기
+* JOINED : 상속관계를 테이블을 분리하는 방법 (Object oriented style)
+  - @DiscriminatorColumn 을 통해서 메인 테이블의 구분자가 있어 명시적으로 구분하기 좋다
+  - 정규화의 장점, 참조 무결성 <-> 테이블이 늘어나서 관리 비용 및 조회 시에 성능 및 복잡성 다소 증가
+* TABLE_PER_CLASS : 개별 테이블을 공통 컬럼을 유지해서 별도 테이블로 구성하는 방법 (Superset style)
+  - 구분 컬럼도 필요없고, 개별 테이블이라 성능도 좋을 것 같지만, 코드 수정 및 유지보수에 최악의 구조
+  - 모든 테이블을 Item 기준으로 조회하고 싶을 때에 Union 명령을 통해서 가져오는 성능이슈가 있다
+
+#### 5-2. 매핑 정보 상속 (Mapped Superclass)
+> 관계적으로 무관하지만, 항상 사용되는 공통 컬럼들이 존재하는 경우 (created, modified 등의 컬럼들) 추상클래스 상속을 통해 @MappedSuperclass 지정
+> 운영시에 필요한 다양한 정보는 기본적으로 들어가기 때문에 BaseEntity 클래스를 생성해서 사용하는 것을 검토해야 한다
+
+* 특징 및 장단점
+  - 상속관계가 아니며, 엔티티도 아니라서 테이블과 매핑할 수 없으며, 조회가 불가능하다
+  - 자식 클래스에 다양한 공통 필드(등록자, 생성일자 등)를 손쉽게 제공할 수 있다
+
+#### 5-3. 실전 예제
+> 상품의 종류는 음반, 도서, 영화가 있고 향후 확장가능성이 있으며, 모든 데이터의 등록 및 수정일은 필수 컬럼이다
+
+```bash
+Product = { Album, Book, Movie } -> Inheritance strategy
+Common = { RegisteredDate, ModifiedDate } -> MappedSuperclass
+```
+
 
 ## IV. 프록시와 연관관계 관리
 ## V. 값 타입

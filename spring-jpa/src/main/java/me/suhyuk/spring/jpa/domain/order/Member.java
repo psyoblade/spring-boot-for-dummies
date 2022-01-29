@@ -1,16 +1,15 @@
-package me.suhyuk.spring.jpa.domain;
+package me.suhyuk.spring.jpa.domain.order;
 
 import lombok.*;
 
 import javax.persistence.*;
 import java.util.Objects;
 
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "MEMBER")
 @Getter
-@Setter
 @ToString
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member {
 
     @Id @GeneratedValue()
@@ -28,6 +27,10 @@ public class Member {
         this.city = city;
         this.street = street;
         this.zipCode = zipCode;
+    }
+
+    public void doOrder(Order order) {
+        order.selectMember(this);
     }
 
     public Member deepCopy(Long newId, Member member) {

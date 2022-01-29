@@ -1,6 +1,6 @@
 package me.suhyuk.spring.jpa.repository;
 
-import me.suhyuk.spring.jpa.domain.Member;
+import me.suhyuk.spring.jpa.domain.order.Member;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;

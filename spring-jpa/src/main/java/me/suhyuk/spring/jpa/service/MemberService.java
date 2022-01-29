@@ -1,7 +1,7 @@
 package me.suhyuk.spring.jpa.service;
 
 import lombok.AllArgsConstructor;
-import me.suhyuk.spring.jpa.domain.Member;
+import me.suhyuk.spring.jpa.domain.order.Member;
 import me.suhyuk.spring.jpa.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 

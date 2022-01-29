@@ -1,6 +1,6 @@
 package me.suhyuk.spring.jpa;
 
-import me.suhyuk.spring.jpa.domain.Member;
+import me.suhyuk.spring.jpa.domain.order.Member;
 import me.suhyuk.spring.jpa.repository.MemberRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.springframework.beans.factory.annotation.Autowired;
