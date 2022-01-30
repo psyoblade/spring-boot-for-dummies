@@ -9,16 +9,20 @@
         <class>IdentityType</class>
         <class>SequenceType</class>
         <class>TableType</class-->
-        <class>me.suhyuk.spring.jpa.domain.order.Member</class>
+        <!--class>me.suhyuk.spring.jpa.domain.order.Member</class>
         <class>me.suhyuk.spring.jpa.domain.order.Order</class>
         <class>me.suhyuk.spring.jpa.domain.order.OrderItem</class>
         <class>me.suhyuk.spring.jpa.domain.order.Item</class>
         <class>me.suhyuk.spring.jpa.domain.order.Category</class>
         <class>me.suhyuk.spring.jpa.domain.order.Delivery</class>
-        <class>me.suhyuk.spring.jpa.domain.order.DeliveryStatus</class>
+        <class>me.suhyuk.spring.jpa.domain.order.DeliveryStatus</class-->
         <!--class>me.suhyuk.spring.jpa.domain.foo.Foo</class-->
         <!--class>me.suhyuk.spring.jpa.domain.team.Team</class>
         <class>me.suhyuk.spring.jpa.domain.team.Player</class-->
+        <class>me.suhyuk.spring.jpa.domain.media.Product</class>
+        <class>me.suhyuk.spring.jpa.domain.media.Album</class>
+        <class>me.suhyuk.spring.jpa.domain.media.Book</class>
+        <class>me.suhyuk.spring.jpa.domain.media.Movie</class>
         <properties>
             <!-- 필수 속성 -->
             <property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>

@@ -341,6 +341,44 @@ Common = { RegisteredDate, ModifiedDate } -> MappedSuperclass
 
 
 ## IV. 프록시와 연관관계 관리
+> 왜 써야 하는지를 이해해야 한다. 연관관계가 있지만 필요한 정보만 가져오는 것이 효과적일 것이다. 즉, 가능하면 끝까지 기다렸다가 필요한 정보만 가져옵니다.
+> Mock 객체와 유사하게 실제 데이터베이스 조회를 하지 않고 getReference (프록시 객체는 실제 객체를 상속받은 객체이다)통해서 사용하지 않는 객체를 줍니다
+
+### 1. 프록시의 개념
+* 프록시 객체는 처음 한 번만 초기화
+* 프록시는 항상 유지되고 생성된 객체를 이용하여 프록시가 전달해줌
+* 프록시는 원본 엔티티의 상속이므로 비교 시에 instance of 사용
+* 영속성 컨텍스트에 엔티티가 이미 있다면 getReference 는 실제 엔티티를 반환
+* 영속성 컨텍스트 지원을 못 받는 준영속상태일때 초기화 이슈 조심
+  - em.detach(entity) 혹은 em.clear() 혹은 em.close() 호출 시에 영속 -> 준영속 상태가 됩니다
+
+```bash
+# 인스턴스 초기화 여부 확인
+EntityManagerFactory().getPersistenceUnitUtil().isLoaded(Entity entity);
+# 프록시 클래스 확인
+entity.getClass().getName()
+# 프록시 강제 초기화
+org.hibernate.Hibernate.initialize(entity);
+```
+
+### 2. 즉시 로딩과 지연 로딩 
+* 가급적 지연로딩을 사용해야 하는데, 즉시로딩의 경우 예상치 못한 SQL발생 가능성이 있다
+  - 레퍼런스 하는 객체들이 늘어나는 경우 수많은 Join 이 미친듯이 늘어날 수 있겠구나
+* 즉시로딩은 JPQL 에서 N+1 문제가 있을 수 있다
+  - JPA 경우는 최적화된 Join 쿼리를 만들 수 있지만 JPQL 경우는 일단 기본 쿼리(1)가 나가고, 레퍼런스 참조에 따라 그 횟수(N)만큼 질의가 발생할 수 있다 
+* @ManyToOne, @OneToOne **기본설정이 Eager 이므로 Lazy 설정**이 필요함
+* @OneToMany, @ManyToMany 기본은 지연으로 설정되어 있음
+
+> 위와 같이 다양한 방법을 해결하기 위해 몇 가지 접근방법을 제안합니다 (1: fetch join 방식, 2: entity-graph 방식, 3: batch size 방식)
+
+### 3. 영속성 전이(Cascade) 와 고아 객체
+
+### 4. 실전 예제
+
+### 5. 질문 사항
+* 만약에 Lazy 전략으로 레퍼런스 가져오되 나중에 하나만 읽는 경우와, 둘다 읽는 경우 어떻게 동작하는가?
+
+
 ## V. 값 타입
 ## VI. 객체지향 쿼리 언어
 
@@ -487,6 +525,9 @@ class Repository {
 
 ### 6. 그레이들 관련
 * 그레이들 리프래시 : `Shift + Command + I`
+
+### 7. 기타 운영
+* 잊고 있었는데, 관계형 데이터베이스의 경우 DBA가 필요하며, 상시 운영 및 Slow-query 등에 대한 모니터링 및 알림이 필요하다
 
 
 ## IX. 레퍼런스
