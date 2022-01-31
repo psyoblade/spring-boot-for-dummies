@@ -6,6 +6,9 @@ import me.suhyuk.spring.jpa.domain.media.Movie;
 import me.suhyuk.spring.jpa.domain.order.*;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import javax.persistence.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 @SpringBootApplication
 public class SpringJpaApplication {
@@ -190,7 +193,8 @@ public class SpringJpaApplication {
 			em.persist(order);
 			 */
 
-			// 5-1. SINGLE_TABLE 상속 전략
+			/**
+			// 13. SINGLE_TABLE 상속 전략
 			Album stay = Album.builder().name("STAY").price(8000).artist("한스 짐머").build();
 			Book harryPotter = Book.builder().name("해리포터").price(10000).author("J.K.Rolling").build();
 			Movie interstellar = Movie.builder().name("인터스텔라").price(18000).director("크리스토퍼 놀란").actor("메튜 맥커너히").build();
@@ -203,6 +207,50 @@ public class SpringJpaApplication {
 
 			Album found = em.find(Album.class, 1L);
 			System.out.println("found = " + found);
+			 */
+
+			/**
+			// 14. 엘리먼트 컬렉션
+			Address homeAddress = Address.builder().city("경기도").street("용호1로").zipCode("17582").build();
+			Set<String> favoriteFoods = new HashSet();
+			favoriteFoods.add("치킨");
+			favoriteFoods.add("족발");
+			favoriteFoods.add("피자");
+			Member member = Member.builder().name("박수혁").homeAddress(homeAddress).favoriteFoods(favoriteFoods).build();
+			em.persist(member);
+			 */
+
+			/**
+			// 15. 멤버 값 적용
+			Item dosirak = Item.builder().name("도시락").price(100).build();
+			em.persist(dosirak);
+
+			Member member = Member.builder().name("박수혁").build();
+			em.persist(member);
+
+			OrderItem orderItem1 = OrderItem.builder().item(dosirak).count(5).build();
+			em.persist(orderItem1);
+
+			Order order = Order.builder().orderStatus(OrderStatus.ORDER).build();
+			order.addOrderItem(orderItem1);
+			member.doOrder(order);
+			em.persist(order);
+			 */
+
+			// 16. 영속성 전이
+			Item item = Item.builder().name("햄버거").price(1000).build();
+			OrderItem orderItem = OrderItem.builder().item(item).count(2).build();
+
+			Member member = Member.builder().name("박수혁").build();
+			Order order = Order.builder().build();
+			order.addOrderItem(orderItem);
+			member.doOrder(order);
+
+			em.persist(item);
+//			em.persist(orderItem); // w/ CascadeType.PERSIST
+
+			em.persist(member);
+			em.persist(order);
 
 			// -- flush entity manager
 			tx.commit();

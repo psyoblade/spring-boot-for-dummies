@@ -144,7 +144,7 @@ public class Player {
   @Column(name = "PLAYER_ID", nullable = false)
   private Long id;
   @JoinColumn(name = "TEAM_ID")
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   private Team team;
   @Column(name = "PLAYER_NAME")
   private String name;
@@ -192,7 +192,7 @@ public class Player {
   @Column(name = "PLAYER_ID", nullable = false)
   private Long id;
   @JoinColumn(name = "TEAM_ID")
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   private Team team;
   @Column(name = "PLAYER_NAME")
   private String name;
@@ -235,7 +235,7 @@ public class Order {
   @Column(name = "ORDER_ID")
   private Long id;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "MEMBER_ID")
   private Member member;
 
@@ -372,14 +372,72 @@ org.hibernate.Hibernate.initialize(entity);
 > 위와 같이 다양한 방법을 해결하기 위해 몇 가지 접근방법을 제안합니다 (1: fetch join 방식, 2: entity-graph 방식, 3: batch size 방식)
 
 ### 3. 영속성 전이(Cascade) 와 고아 객체
+> 부모 저장시에 자식도 다 같이 싸그리 저장하고 싶을 때에 사용하는 것이 영속성 전이(Cascade)라고 합니다. 데이터베이스의 삭제 혹은 Drop 시에 cascade 옵션과 유사하게 동작합니다
+
+* 상위객체와 하위객체 모두를 매번 persist 해야 하는 불편함을 줄일 수가 있다 (ALL or PERSIST 정도만 씁니다)
+* 영속성 정의와 연관관계 매핑은 전혀 관계가 없습니다
+* 하나의 부모가 자식들의 객체를 관리하는 경우 (게시글 + 첨부파일)는 사용하기 용이하지만, **독립적인 객체인 경우는 사용해서는 안된**다
+  - 즉, 라이프싸이클이 동일한 경우의 객체간에 관리에만 사용해야 합니다
+* 고아객체(orphan remove) 는 엔티티간의 연관관계가 끊어진 경우 자동 삭제하는 옵션
+  - 위험할 수 있기 때문에 하나의 라이프싸이클에서 사용 및 활용되는 경우에만 사용해야 합니다
+
+#### 3-1. 영속전이 + 고아객체 그리고 생명주기
+> CascadeType.ALL && orphanRemoval = true 옵션을 주는 경우
+
+* 부모 엔티티를 통해 자식의 생명주기를 싸잡아서 관리할 수 있음
+* 도메인 주도 설계의 Aggregate Root 개념 구현 시에 유용함
+* 글로벌 패치 전략 (fetch = LAZY)
+  - ManyToOne, OnoToOne 관계는 반드시 Lazy 전략으로 변경
+* 영속성 전이 전략 (cascade = ALL)
+  - 같은 맥락에 하나의 부모에 대한 관계가 순수하다면 ALL 설정
+
 
 ### 4. 실전 예제
+
 
 ### 5. 질문 사항
 * 만약에 Lazy 전략으로 레퍼런스 가져오되 나중에 하나만 읽는 경우와, 둘다 읽는 경우 어떻게 동작하는가?
 
 
 ## V. 값 타입
+> 복잡한 객체의 세상에서 조금이라도 단순화하기 위해 값 타입을 만들어내었다. 단순하고 안전하게 사용하기 위함
+> 특히 embedded 유형의 객체에 대해서 사용할 때에는 절대 side-effect 없이 **레퍼런스를 공유해서는 안되고 복사해서 사용**해야만 합니다 
+> 값 타입은 인스턴스가 달라도 값이 같으면 같은 것으로 봅니다. 복잡하게 사용하고 구성하는 것은 적절하지 않고 자주 변경되지 않는 것으로 사용해야합니다
+> **값 타입 전체를 쉽게 쓰고, 지우는 경우에만 값 타입으로 써라** 그게 아니라면 Entity 를 사용하고 해당 복잡한 객체를 Embed 하여 써라
+
+### 1. 값 타입의 이해와 활용
+
+* 객체 타입의 한계
+  - 항상 값의 복사를 통해 사용해야 부수효과 없는 안전한 코딩이 가능합니다
+  - 임베디드 타입처럼 직접 정의한 타입은 레퍼런스 타입이라 참조값을 넣는 것을 피하기가 아주 아주 어렵다 (컴파일 수준에서 찾기 어렵다)
+* 불변 객체
+  - 이러한 문제점을 해결하기 위한 방법은 값 타입은 불변 객체로 설계해야만 합니다
+  - 생성자로만 값을 설정할 수 있도록 (Builder 패턴 활용) 하고 수정자를 만들지 않도록 합니다
+* 값 타입 컬렉션
+  - 엔티티와는 다르게 id 가 없어야 하고, 이를 별도의 테이블로도 관리 되어야 합니다
+  - 당연하지만 별도 테이블이므로 지연 로딩이 되어야 합니다.
+  - 수정하기 위해서는 setter 가 없어야 하므로, 특정 레퍼런스 자체를 새로 set 하는 것이 최선입니다.
+  - 특히 집합내의 임의의 값을 변경할 것으로 보이지만, **전체가 삭제되고 나머지가 다시 들어**가는 구조다 (OrderColumn 꼼수도 있다)
+
+### 2. 값 타입 vs. 엔티티
+
+* 값 타입
+  - 식별자가 없다
+  - 생명주기가 엔티티에 의존한다
+  - 공유하지 않고 복사해서 사용한다
+  - 불변객체로 만들어서 사용한다
+* 엔티티 
+  - 식별자가 있다
+  - 생명주기 관리가 된다
+  - 공유해서 사용할 수 있다 
+
+### 3. 실전 예제
+* 클래스 내의 멤버변수 액세스하는 모든 상황 시에 getter 통한 비교가 되어야 프록시 사용에도 문제 없이 객체 동등성 비교가 가능합니다
+
+### 4. 질문 사항
+
+
+
 ## VI. 객체지향 쿼리 언어
 
 ## VII. 시행착오
