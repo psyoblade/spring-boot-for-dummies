@@ -26,6 +26,7 @@ public class Foo {
     private LocalDateTime insertedDateTime;
     @Lob
     private String description;
+
     public Foo(){
     }
 }

@@ -14,7 +14,7 @@ public class Player {
     @Column(name = "PLAYER_ID", nullable = false)
     private Long id;
     @JoinColumn(name = "TEAM_ID")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Team team;
     @Column(name = "PLAYER_NAME")
     private String name;

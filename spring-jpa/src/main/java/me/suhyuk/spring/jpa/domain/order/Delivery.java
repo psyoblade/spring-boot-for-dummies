@@ -1,8 +1,11 @@
 package me.suhyuk.spring.jpa.domain.order;
 
+import lombok.Getter;
+
 import javax.persistence.*;
 
 @Entity
+@Getter
 @Table(name = "DELIVERY")
 public class Delivery {
 
@@ -11,11 +14,11 @@ public class Delivery {
     private Long id;
 
     private String name;
-    private String city;
-    private String street;
-    private String zipCode;
+    @Embedded
+    private Address address;
     private DeliveryStatus deliveryStatus;
 
     @OneToOne(mappedBy = "delivery")
     private Order order;
+
 }

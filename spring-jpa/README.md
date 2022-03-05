@@ -144,8 +144,8 @@ public class Player {
   @Column(name = "PLAYER_ID", nullable = false)
   private Long id;
   @JoinColumn(name = "TEAM_ID")
-  @ManyToOne
-  private Team team;
+  @ManyToOne(fetch = FetchType.LAZY)
+  private Team userDetail;
   @Column(name = "PLAYER_NAME")
   private String name;
   public Player() {
@@ -192,17 +192,17 @@ public class Player {
   @Column(name = "PLAYER_ID", nullable = false)
   private Long id;
   @JoinColumn(name = "TEAM_ID")
-  @ManyToOne
-  private Team team;
+  @ManyToOne(fetch = FetchType.LAZY)
+  private Team userDetail;
   @Column(name = "PLAYER_NAME")
   private String name;
   @Builder
   public Player(String name) {
     this.name = name;
   }
-  public void changeTeam(Team team) {
-    this.team = team;
-    this.team.getPlayers().add(this);
+  public void changeTeam(Team userDetail) {
+    this.userDetail = userDetail;
+    this.userDetail.getPlayers().add(this);
   }
   @Override
   public String toString() {
@@ -215,11 +215,11 @@ public class Player {
 // main-class
 public class SpringJpaApplication {
   public static void main(String[] args) {
-    Team team = Team.builder().name("엔씨다이노스").build();
-    em.persist(team);
+    Team userDetail = Team.builder().name("엔씨다이노스").build();
+    em.persist(userDetail);
 
     Player player = Player.builder().name("박수혁").build();
-    player.changeTeam(team);
+    player.changeTeam(userDetail);
     em.persist(player);
   }
 }
@@ -235,7 +235,7 @@ public class Order {
   @Column(name = "ORDER_ID")
   private Long id;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "MEMBER_ID")
   private Member member;
 
@@ -341,7 +341,103 @@ Common = { RegisteredDate, ModifiedDate } -> MappedSuperclass
 
 
 ## IV. 프록시와 연관관계 관리
+> 왜 써야 하는지를 이해해야 한다. 연관관계가 있지만 필요한 정보만 가져오는 것이 효과적일 것이다. 즉, 가능하면 끝까지 기다렸다가 필요한 정보만 가져옵니다.
+> Mock 객체와 유사하게 실제 데이터베이스 조회를 하지 않고 getReference (프록시 객체는 실제 객체를 상속받은 객체이다)통해서 사용하지 않는 객체를 줍니다
+
+### 1. 프록시의 개념
+* 프록시 객체는 처음 한 번만 초기화
+* 프록시는 항상 유지되고 생성된 객체를 이용하여 프록시가 전달해줌
+* 프록시는 원본 엔티티의 상속이므로 비교 시에 instance of 사용
+* 영속성 컨텍스트에 엔티티가 이미 있다면 getReference 는 실제 엔티티를 반환
+* 영속성 컨텍스트 지원을 못 받는 준영속상태일때 초기화 이슈 조심
+  - em.detach(entity) 혹은 em.clear() 혹은 em.close() 호출 시에 영속 -> 준영속 상태가 됩니다
+
+```bash
+# 인스턴스 초기화 여부 확인
+EntityManagerFactory().getPersistenceUnitUtil().isLoaded(Entity entity);
+# 프록시 클래스 확인
+entity.getClass().getName()
+# 프록시 강제 초기화
+org.hibernate.Hibernate.initialize(entity);
+```
+
+### 2. 즉시 로딩과 지연 로딩 
+* 가급적 지연로딩을 사용해야 하는데, 즉시로딩의 경우 예상치 못한 SQL발생 가능성이 있다
+  - 레퍼런스 하는 객체들이 늘어나는 경우 수많은 Join 이 미친듯이 늘어날 수 있겠구나
+* 즉시로딩은 JPQL 에서 N+1 문제가 있을 수 있다
+  - JPA 경우는 최적화된 Join 쿼리를 만들 수 있지만 JPQL 경우는 일단 기본 쿼리(1)가 나가고, 레퍼런스 참조에 따라 그 횟수(N)만큼 질의가 발생할 수 있다 
+* @ManyToOne, @OneToOne **기본설정이 Eager 이므로 Lazy 설정**이 필요함
+* @OneToMany, @ManyToMany 기본은 지연으로 설정되어 있음
+
+> 위와 같이 다양한 방법을 해결하기 위해 몇 가지 접근방법을 제안합니다 (1: fetch join 방식, 2: entity-graph 방식, 3: batch size 방식)
+
+### 3. 영속성 전이(Cascade) 와 고아 객체
+> 부모 저장시에 자식도 다 같이 싸그리 저장하고 싶을 때에 사용하는 것이 영속성 전이(Cascade)라고 합니다. 데이터베이스의 삭제 혹은 Drop 시에 cascade 옵션과 유사하게 동작합니다
+
+* 상위객체와 하위객체 모두를 매번 persist 해야 하는 불편함을 줄일 수가 있다 (ALL or PERSIST 정도만 씁니다)
+* 영속성 정의와 연관관계 매핑은 전혀 관계가 없습니다
+* 하나의 부모가 자식들의 객체를 관리하는 경우 (게시글 + 첨부파일)는 사용하기 용이하지만, **독립적인 객체인 경우는 사용해서는 안된**다
+  - 즉, 라이프싸이클이 동일한 경우의 객체간에 관리에만 사용해야 합니다
+* 고아객체(orphan remove) 는 엔티티간의 연관관계가 끊어진 경우 자동 삭제하는 옵션
+  - 위험할 수 있기 때문에 하나의 라이프싸이클에서 사용 및 활용되는 경우에만 사용해야 합니다
+
+#### 3-1. 영속전이 + 고아객체 그리고 생명주기
+> CascadeType.ALL && orphanRemoval = true 옵션을 주는 경우
+
+* 부모 엔티티를 통해 자식의 생명주기를 싸잡아서 관리할 수 있음
+* 도메인 주도 설계의 Aggregate Root 개념 구현 시에 유용함
+* 글로벌 패치 전략 (fetch = LAZY)
+  - ManyToOne, OnoToOne 관계는 반드시 Lazy 전략으로 변경
+* 영속성 전이 전략 (cascade = ALL)
+  - 같은 맥락에 하나의 부모에 대한 관계가 순수하다면 ALL 설정
+
+
+### 4. 실전 예제
+
+
+### 5. 질문 사항
+* 만약에 Lazy 전략으로 레퍼런스 가져오되 나중에 하나만 읽는 경우와, 둘다 읽는 경우 어떻게 동작하는가?
+
+
 ## V. 값 타입
+> 복잡한 객체의 세상에서 조금이라도 단순화하기 위해 값 타입을 만들어내었다. 단순하고 안전하게 사용하기 위함
+> 특히 embedded 유형의 객체에 대해서 사용할 때에는 절대 side-effect 없이 **레퍼런스를 공유해서는 안되고 복사해서 사용**해야만 합니다 
+> 값 타입은 인스턴스가 달라도 값이 같으면 같은 것으로 봅니다. 복잡하게 사용하고 구성하는 것은 적절하지 않고 자주 변경되지 않는 것으로 사용해야합니다
+> **값 타입 전체를 쉽게 쓰고, 지우는 경우에만 값 타입으로 써라** 그게 아니라면 Entity 를 사용하고 해당 복잡한 객체를 Embed 하여 써라
+
+### 1. 값 타입의 이해와 활용
+
+* 객체 타입의 한계
+  - 항상 값의 복사를 통해 사용해야 부수효과 없는 안전한 코딩이 가능합니다
+  - 임베디드 타입처럼 직접 정의한 타입은 레퍼런스 타입이라 참조값을 넣는 것을 피하기가 아주 아주 어렵다 (컴파일 수준에서 찾기 어렵다)
+* 불변 객체
+  - 이러한 문제점을 해결하기 위한 방법은 값 타입은 불변 객체로 설계해야만 합니다
+  - 생성자로만 값을 설정할 수 있도록 (Builder 패턴 활용) 하고 수정자를 만들지 않도록 합니다
+* 값 타입 컬렉션
+  - 엔티티와는 다르게 id 가 없어야 하고, 이를 별도의 테이블로도 관리 되어야 합니다
+  - 당연하지만 별도 테이블이므로 지연 로딩이 되어야 합니다.
+  - 수정하기 위해서는 setter 가 없어야 하므로, 특정 레퍼런스 자체를 새로 set 하는 것이 최선입니다.
+  - 특히 집합내의 임의의 값을 변경할 것으로 보이지만, **전체가 삭제되고 나머지가 다시 들어**가는 구조다 (OrderColumn 꼼수도 있다)
+
+### 2. 값 타입 vs. 엔티티
+
+* 값 타입
+  - 식별자가 없다
+  - 생명주기가 엔티티에 의존한다
+  - 공유하지 않고 복사해서 사용한다
+  - 불변객체로 만들어서 사용한다
+* 엔티티 
+  - 식별자가 있다
+  - 생명주기 관리가 된다
+  - 공유해서 사용할 수 있다 
+
+### 3. 실전 예제
+* 클래스 내의 멤버변수 액세스하는 모든 상황 시에 getter 통한 비교가 되어야 프록시 사용에도 문제 없이 객체 동등성 비교가 가능합니다
+
+### 4. 질문 사항
+
+
+
 ## VI. 객체지향 쿼리 언어
 
 ## VII. 시행착오
@@ -487,6 +583,9 @@ class Repository {
 
 ### 6. 그레이들 관련
 * 그레이들 리프래시 : `Shift + Command + I`
+
+### 7. 기타 운영
+* 잊고 있었는데, 관계형 데이터베이스의 경우 DBA가 필요하며, 상시 운영 및 Slow-query 등에 대한 모니터링 및 알림이 필요하다
 
 
 ## IX. 레퍼런스
