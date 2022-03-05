@@ -1,6 +1,6 @@
 package me.suhyuk.spring.web.service;
 
-import me.suhyuk.spring.web.HelloWorldApplication;
+import me.suhyuk.spring.web.SprintWebApplication;
 import me.suhyuk.spring.web.domain.Member;
 import me.suhyuk.spring.web.repository.MemberRepository;
 import org.junit.Assert;
@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @SpringBootTest
 @ActiveProfiles(profiles = "test-web")
 @Transactional
-@ContextConfiguration(classes = HelloWorldApplication.class)
+@ContextConfiguration(classes = SprintWebApplication.class)
 public class MemberServiceIntegrationTest {
     @Autowired
     MemberService memberService;

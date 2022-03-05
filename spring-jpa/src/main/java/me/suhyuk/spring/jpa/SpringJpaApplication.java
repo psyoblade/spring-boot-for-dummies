@@ -237,6 +237,7 @@ public class SpringJpaApplication {
 			em.persist(order);
 			 */
 
+			/**
 			// 16. 영속성 전이
 			Item item = Item.builder().name("햄버거").price(1000).build();
 			OrderItem orderItem = OrderItem.builder().item(item).count(2).build();
@@ -251,6 +252,7 @@ public class SpringJpaApplication {
 
 			em.persist(member);
 			em.persist(order);
+			 */
 
 			// -- flush entity manager
 			tx.commit();

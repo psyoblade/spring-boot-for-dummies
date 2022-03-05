@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JpaPluginProjectSettings">
+    <option name="entityNameTemplate" />
+    <option name="tableNameTemplate" value="${className.underscore().toUpperCase()}" />
+    <option name="columnNameTemplate" value="${fieldName.underscore().toUpperCase()}" />
+    <option name="useConstantsForEntities" value="true" />
+    <option name="constantsOnColumnName" value="false" />
+    <option name="scaffoldingLanguage" />
+  </component>
+</project>

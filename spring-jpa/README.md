@@ -145,7 +145,7 @@ public class Player {
   private Long id;
   @JoinColumn(name = "TEAM_ID")
   @ManyToOne(fetch = FetchType.LAZY)
-  private Team team;
+  private Team userDetail;
   @Column(name = "PLAYER_NAME")
   private String name;
   public Player() {
@@ -193,16 +193,16 @@ public class Player {
   private Long id;
   @JoinColumn(name = "TEAM_ID")
   @ManyToOne(fetch = FetchType.LAZY)
-  private Team team;
+  private Team userDetail;
   @Column(name = "PLAYER_NAME")
   private String name;
   @Builder
   public Player(String name) {
     this.name = name;
   }
-  public void changeTeam(Team team) {
-    this.team = team;
-    this.team.getPlayers().add(this);
+  public void changeTeam(Team userDetail) {
+    this.userDetail = userDetail;
+    this.userDetail.getPlayers().add(this);
   }
   @Override
   public String toString() {
@@ -215,11 +215,11 @@ public class Player {
 // main-class
 public class SpringJpaApplication {
   public static void main(String[] args) {
-    Team team = Team.builder().name("엔씨다이노스").build();
-    em.persist(team);
+    Team userDetail = Team.builder().name("엔씨다이노스").build();
+    em.persist(userDetail);
 
     Player player = Player.builder().name("박수혁").build();
-    player.changeTeam(team);
+    player.changeTeam(userDetail);
     em.persist(player);
   }
 }
