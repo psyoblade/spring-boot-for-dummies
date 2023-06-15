@@ -63,7 +63,9 @@
 * application.yml 파일에 spring.profiles.active 설정을 유지해야 합니다
 * 개별 application-${type}.yml 파일을 생성하고 각 type 별 Profile 설정된 Configuration 클래스를 생성합니다
 * application.yml 파일에 spring.profiles.include 형식으로 포함시킬 수도 있습니다
-
+* `Profile("test")` 와 같은 `Configuration`이 있는 경우 애플리케이션 로딩이 실패할 수 있다는 점에 유의
+  * 예를 들어 prod, test 2개의 프로파일이 명시된 프로젝트라면 둘 중 하나를 반드시 ActiveProfiles 설정을 해야만 한다
+  * 또한 test 프로파일이 있는 경우에는 해당 값을 읽어들이지만, 없다면 이전 마지막 프로파일을 읽어들임에 주의해야 한다
 
 ## 로깅설정
 > 스프링에서 어떻게 로깅이 수행되고, 활용하는 지에 대해 이해합니다.

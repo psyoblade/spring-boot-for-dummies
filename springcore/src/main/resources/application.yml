@@ -4,4 +4,7 @@ spring:
   output:
     ansi:
       enabled: always
-
+mail:
+  hostName: ncsoft.com
+  port: 8080
+  from: psyoblade@ncsoft.com
